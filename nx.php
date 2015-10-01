@@ -57,7 +57,7 @@
 
 			/* Check if the client has been to this url before. */
 			$res = $db->query("SELECT id FROM urls WHERE id='$id' AND url='$url' LIMIT 1;");
-			if ($res_info->num_rows === 0) {
+			if ($res->num_rows === 0) {
 				/* First time this client contacts this specific url, make a new entry. */
 				$db->query("INSERT INTO urls (id, url, visits, time)
 				                 VALUES ('$id', '$url', 1, '$now');")
