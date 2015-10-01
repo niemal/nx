@@ -1,4 +1,7 @@
 <?php
+
+define('NX-ANALYTICS', true);
+
 /**
  * This file may be included in PHP files as it can handle back-end
  * type of analytics. However, it can also serve as a stand-alone file
@@ -7,13 +10,11 @@
 
 	function nx_init()
 	{
-		/* These values will be interpreted/parsed with/from install.php file. */
-		$hostname = 'localhost';
-		$username = 'username';
-		$password = 'password';
-		$database = 'nx_analytics';
+		/* This needs to go away, its ugly */
+		require('config.php');
 
-		$db = new mysqli($hostname, $username, $password, $database);
+		/* These values will be interpreted/parsed with/from install.php file. */
+		$db = new mysqli($nx_config['hostname'], $nx_config['user'], $nx_config['pass'], $nx_config['database']);
 
 		if ($db->connect_errno) {
 			echo "Connection failed to establish: " .
@@ -59,8 +60,7 @@
 			$res = $db->query("SELECT id FROM urls WHERE id='$id' AND url='$url' LIMIT 1;");
 			if ($res->num_rows === 0) {
 				/* First time this client contacts this specific url, make a new entry. */
-				$db->query("INSERT INTO urls (id, url, visits, time)
-				                 VALUES ('$id', '$url', 1, '$now');")
+				$db->query("INSERT INTO urls (id, url, visits, time) VALUES ('$id', '$url', 1, '$now');");
 			} else {
 				/* Increment the visits column. */
 				$db->query("UPDATE urls SET visits=visits+1 WHERE id='$id' AND url='$url';");
