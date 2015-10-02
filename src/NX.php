@@ -1,20 +1,17 @@
 <?php
 
-define('NX-ANALYTICS', true);
+class NX {
 
-/**
- * This file may be included in PHP files as it can handle back-end
- * type of analytics. However, it can also serve as a stand-alone file
- * which javascript code must reach.
- **/
+	private $mode = 'advanced';
+	private $config;
 
-	function nx_init()
-	{
-		/* This needs to go away, its ugly */
-		require('config.php');
+	function NX($config) {
+		$this->mode = $config['mode'];
+		$this->config = $config;
+	}
 
-		/* These values will be interpreted/parsed with/from install.php file. */
-		$db = new mysqli($nx_config['hostname'], $nx_config['user'], $nx_config['pass'], $nx_config['database']);
+	function advanced() {
+		$db = new mysqli($this->config['hostname'], $this->config['user'], $this->config['pass'], $this->config['database']);
 
 		if ($db->connect_errno) {
 			echo "Connection failed to establish: " .
@@ -66,7 +63,6 @@ define('NX-ANALYTICS', true);
 				$db->query("UPDATE urls SET visits=visits+1 WHERE id='$id' AND url='$url';");
 			}
 		}
- 	}
+	}
 
-
- 	nx_init();
+}
