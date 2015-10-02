@@ -1,6 +1,6 @@
 <?php
 
-/*
+/**
  * Main entrypoint for NX ANALYTICS
  *
  *
@@ -11,23 +11,20 @@
  *     <script src="path-to-nx-analytics/js"></script>
  *
  * The admin panel is at "/admin" and the install script is at "/install".
- *
- */
+ **/
 
 define('NX-ANALYTICS', true);
-require_once('config.php');
 
-if(isset($_GET['nx-route']) === false){ // The script was loaded server-side
+if (!isset($_GET['nx-route'])) { // The script was loaded server-side.
 
-	require_once('src/NX.php');
-	$nx = new NX($nx_config);
-	$nx->advanced();
+	require_once('src/nx.php');
+	$nx = new NX();
+	$nx->init();
 
-
-} else { // The script was requested from a browser
+} else { // The script was requested from a browser.
 	$method = $_GET['nx-route'];
 	
-	switch($method){
+	switch ($method) {
 		case 'js':
 			echo 'The javascript is not here yet. Sorry.';
 			break;
