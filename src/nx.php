@@ -25,12 +25,12 @@ class NX
 		}
 	}
 
-	function init()
+	public function init()
 	{
 		(($this->mode === 'simple') ? $this->simple() : $this->advanced());
 	}
 
-	function simple()
+	private function simple()
 	{
 		$now = time();
 		$url = $this->db->real_escape_string($_SERVER['REQUEST_URI']);
@@ -52,7 +52,7 @@ class NX
 		}
 	}
 
-	function advanced()
+	private function advanced()
 	{
 		$now = time();
 		$ip  = $this->db->real_escape_string($_SERVER['REMOTE_ADDR']);
