@@ -59,7 +59,7 @@ class SIMPLE extends NX
 	/**
 	 * @return
 	 *	type: Array(2, 5)
-	 *			indices: 'ua', 'n'
+	 *		indices: 'ua', 'n'
 	 *
 	 *	context: Top 5 most used user-agents overall.
 	 **/
