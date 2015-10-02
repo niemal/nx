@@ -15,10 +15,10 @@ class SIMPLE extends NX
 
 	/**
 	 * @return
-	 *		type: Array(2, 5)
-	 *			indices: 'ref', n'
+	 *	type: Array(2, 5)
+	 *		indices: 'ref', n'
 	 *
-	 *		context: Top 5 referers overall.
+	 *	context: Top 5 referers overall.
 	 **/
 	public function top_5_refs()
 	{
@@ -29,10 +29,10 @@ class SIMPLE extends NX
 
 	/**
 	 * @return
-	 *		type: Array(2, N)
-	 *			indices: 'ref', 'n'
+	 *	type: Array(2, N)
+	 *		indices: 'ref', 'n'
 	 *
-	 *		context: All referers.
+	 *	context: All referers.
 	 **/
 	public function all_refs()
 	{
@@ -43,10 +43,10 @@ class SIMPLE extends NX
 
 	/**
 	 * @return
-	 *		type: Array(2, 5)
-	 *			indices: 'ua', 'n'
+	 *	type: Array(2, 5)
+	 *		indices: 'ua', 'n'
 	 *
-	 *		context: All most used user-agents overall.
+	 *	context: All most used user-agents overall.
 	 **/
 	public function top_5_uas()
 	{
@@ -58,10 +58,10 @@ class SIMPLE extends NX
 
 	/**
 	 * @return
-	 *		type: Array(2, 5)
+	 *	type: Array(2, 5)
 	 *			indices: 'ua', 'n'
 	 *
-	 *		context: Top 5 most used user-agents overall.
+	 *	context: Top 5 most used user-agents overall.
 	 **/
 	public function all_uas()
 	{
@@ -72,13 +72,13 @@ class SIMPLE extends NX
 
 	/**
 	 * @return
-	 *		type: Array(2, Array(2, N))
-	 *			indices: 'top_5', 'all'
-	 *				-> $url => $visits
+	 *	type: Array(2, Array(2, N))
+	 *		indices: 'top_5', 'all'
+	 *			-> $url => $visits
 	 *
-	 *		context: Most visited URLs.
+	 *	context: Most visited URLs.
 	 *
-	 * NOTE: might need a little MySQL optimization over here.
+	 * NOTE: Might need a little MySQL optimization over here.
 	 **/
 	public function mixed_urls()
 	{
