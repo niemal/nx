@@ -34,7 +34,7 @@ if (!isset($_GET['nx-route'])) { // The script was loaded server-side.
 			break;
 
 		case 'install':
-			echo 'TODO code install script.';
+			require_once('src/install.php');
 			break;
 
 		default:
