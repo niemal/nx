@@ -1,18 +1,47 @@
 <?php
 if (!defined('NX-ANALYTICS')) die('Go away.');
 
-$install_script_url = $_SERVER['REQUEST_URI'];
-
 /**
  * Install script for NX ANALYTICS
  * The user shall tell us information about the database and their website.
  **/
 
+$nx = [
+	'installed' => false,
+	'success-installing' => false,
+	'error' => false,
+	'error-h2' => 'Error',
+	'error-text' => ''
+];
 
-// TODO add backend for POSTed data and write config.php
+// Check if there is a config file
+if (file_exists(dirname(__FILE__).'/config.json')){
+	$nx['installed'] = true;
+	$nx['error'] = true;
+	$nx['error-text'] = 'It seems like NX ANALYTICS is already installed in this system. If you continue, <b>config.php</b> will be overwritten.';
+}
 
-// remember to CHECK SERVER-SIDE EVERY VARIABLE
-// clients can never be trusted
+
+// Check if the install form was submitted
+if (isset($_POST['submit'])) {
+	$data = [];
+	foreach($_POST as $k => $v){
+		if ($k == 'submit') continue;
+		$data[$k] = (isset($_POST[$k]) && !empty($v)) ? $v : -1;
+		if($data[$k] === -1){
+			$nx['error'] = true;
+			$nx['error-text'] = 'The provided form is missing information: ' . $k;
+			break;
+		}
+	}
+
+	// Do we just assume all the data is safe? Really?
+	// I'm not risking this. Not going to write a `config.php`.
+	$data = json_encode($data, 128);
+	file_put_contents(dirname(__FILE__) . '/config.json', $data);
+	$nx['success-installing'] = true;
+}
+
 
 ?>
 <!DOCTYPE html><html>
@@ -31,14 +60,28 @@ $install_script_url = $_SERVER['REQUEST_URI'];
 				<h2>Welcome to NX ANALYTICS!</h2>
 			</div>
 
-			<form action="<?php echo $install_script_url; ?>" method="post" class="content glass">
+
+			<?php if ($nx['success-installing'] === true) { ?>
+			<div class="content glass">
 				<div class="article">
-					<h2 class="article-h2">Title</h2>
-					<p>Welcome and stuff</p>
+					<h2>Congratulations!</h2>
+					<p>NX ANALYTICS was installed successfully! Now head over to the <a href="?admin">admin panel</a>.</p>
+				</div>
+			</div>
+			<?php } else { ?>
+			<form action="<?php echo $_SERVER['REQUEST_URI']; ?>" method="post" class="content glass">
+				<div class="article">
+					<?php if($nx['error'] === true) { ?>
+					<h2><?php echo $nx['error-h2']; ?></h2>
+					<p><?php echo $nx['error-text']; ?></p>
+					<?php } else { ?>
+					<h2>Installing</h2>
+					<p>We have detected that your installation requires setting up. We'll start by asking some things:</p>
+					<?php } ?>
 				</div>
 
 				<div class="article">
-					<h2 class="article-h2">Who are you?</h2>
+					<h2>Who are you?</h2>
 					<p>First up, we need to know some things about you.</p>
 
 					<div class="pure-form pure-form-aligned">
@@ -62,7 +105,7 @@ $install_script_url = $_SERVER['REQUEST_URI'];
 				</div>
 
 				<div class="article">
-					<h2 class="article-h2">About your servers</h2>
+					<h2>About your servers</h2>
 					<p>We also need to know the credentials for your MySQL install. A database will be created by this script.</p>
 
 					<div class="pure-form pure-form-aligned">
@@ -91,7 +134,7 @@ $install_script_url = $_SERVER['REQUEST_URI'];
 				</div>
 
 				<div class="article">
-					<h2 class="article-h2">Configuring NX</h2>
+					<h2>Configuring NX</h2>
 					<p>Where do we store the data? What installation is the best for your website?</p>
 					<p>A <b>simple</b> install will log URLs, user agents and referers - very light and fast. <br/> An <b>advanced</b> install will log and track IP addresses (including those behind proxies), save and parse user agents, URLs and referers. This will allow the user to manipulate data in many ways, providing great details and powerful filters.</p>
 
@@ -114,10 +157,12 @@ $install_script_url = $_SERVER['REQUEST_URI'];
 				</div>
 
 				<div class="article">
-					<h2 class="article-h2">Ready?</h2>
-					<p>well too bad there's no backend code lol</p>
+					<h2>Ready?</h2>
+					<p>Let's go!</p>
+					<p><button type="submit" name="submit">Submit</button></p>
 				</div>
 			</form>
+			<?php } ?>
 		</div>
 	</div>
 
