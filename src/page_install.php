@@ -1,5 +1,6 @@
 <?php
 if (!defined('NX-ANALYTICS')) die('Go away.');
+error_reporting(E_ALL); ini_set('display_errors', 1);
 
 /**
  * Install script for NX ANALYTICS
@@ -8,14 +9,14 @@ if (!defined('NX-ANALYTICS')) die('Go away.');
 
 $nx = [
 	'installed' => false,
-	'success-installing' => false,
+	'success' => false,
 	'error' => false,
 	'error-h2' => 'Error',
 	'error-text' => ''
 ];
 
 // Check if there is a config file
-if (file_exists(dirname(__FILE__).'/config.json')){
+if (file_exists(dirname(__FILE__).'/config.php')) {
 	$nx['installed'] = true;
 	$nx['error'] = true;
 	$nx['error-text'] = 'It seems like NX ANALYTICS is already installed in this system. If you continue, <b>config.php</b> will be overwritten.';
@@ -25,21 +26,43 @@ if (file_exists(dirname(__FILE__).'/config.json')){
 // Check if the install form was submitted
 if (isset($_POST['submit'])) {
 	$data = [];
-	foreach($_POST as $k => $v){
+	$output = '<?php $nx_config = Array(';
+
+	foreach ($_POST as $k => $v) {
 		if ($k == 'submit') continue;
-		$data[$k] = (isset($_POST[$k]) && !empty($v)) ? $v : -1;
-		if($data[$k] === -1){
+
+		$data[$k] = (!empty($v) ? $v : -1);
+
+		if ($data[$k] === -1) {
 			$nx['error'] = true;
 			$nx['error-text'] = 'The provided form is missing information: ' . $k;
 			break;
+		} else if (!is_string($v)) {
+			$nx['error'] = true;
+			$nx['error-text'] = 'The following variable was sent in wrong format: ' . $k;
+			break;
+		} else if (strlen($v) < 4 || strlen($v) > 32) {
+			$nx['error'] = true;
+			$nx['error-text'] = 'Wrong length encountered (allowed range is 4~32) at: ' . $k;
+			break;
+		} else if (strpos($v, '\'') || strpos($k, '\'')) { // 1337 hax :*
+			$nx['error'] = true;
+			$nx['error-text'] = 'Quotation characters are not allowed.';
+			break;
 		}
+
+		if (!strpos($k, 'admin'))
+			$output += '\'' . $k . '\' => \'' . $v . '\',';
 	}
 
-	// Do we just assume all the data is safe? Really?
-	// I'm not risking this. Not going to write a `config.php`.
-	$data = json_encode($data, 128);
-	file_put_contents(dirname(__FILE__) . '/config.json', $data);
-	$nx['success-installing'] = true;
+
+	if (!$nx['error']) {
+		$output = rtrim($output, ',');
+		$output += ');';
+
+		file_put_contents(dirname(__FILE__) . '/config.php', $output);
+		$nx['success'] = true;
+	}
 }
 
 
@@ -61,7 +84,7 @@ if (isset($_POST['submit'])) {
 			</div>
 
 
-			<?php if ($nx['success-installing'] === true) { ?>
+			<?php if ($nx['success'] === true) { ?>
 			<div class="content glass">
 				<div class="article">
 					<h2>Congratulations!</h2>
@@ -71,7 +94,7 @@ if (isset($_POST['submit'])) {
 			<?php } else { ?>
 			<form action="<?php echo $_SERVER['REQUEST_URI']; ?>" method="post" class="content glass">
 				<div class="article">
-					<?php if($nx['error'] === true) { ?>
+					<?php if ($nx['error'] === true) { ?>
 					<h2><?php echo $nx['error-h2']; ?></h2>
 					<p><?php echo $nx['error-text']; ?></p>
 					<?php } else { ?>
