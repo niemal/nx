@@ -9,7 +9,7 @@ class NX_simple {
 		$this->config = $config;
 	}
 
-	private function log()
+	public function log()
 	{
 		$now = time();
 		$url = $this->db->real_escape_string($_SERVER['REQUEST_URI']);
