@@ -33,14 +33,15 @@ if (isset($_POST['submit'])) {
 		'db-host',
 		'db-port',
 		'nx-mode',
-		'nx-errors',
+		'nx-errors', // why does this exist?
 		'nx-db'
 	];
 	$parsed_data = [];
 
 	foreach($required_data as $k){
 		$parsed_data[$k] = (isset($_POST[$k]) && !empty($_POST[$k]) ? ''.$_POST[$k] : -1);
-		
+		$parsed_data[$k] = str_replace($parsed_data[$k], "'", "\\'");
+
 		if($parsed_data[$k] === -1){
 			$nx['error'] = true;
 			$nx['error-text'] = 'The uploaded form is missing information: ' . $k;
@@ -52,9 +53,77 @@ if (isset($_POST['submit'])) {
 		}
 	}
 
-	if($nx['error'] === false) {
-		$json = json_encode($parsed_data, 128);
-		$output = <<<TEXT
+	if ($nx['error'] === false) {
+		$db = new mysqli(
+				$host = $parsed_data['db-host'],
+				$username = $parsed_data['db-user'],
+				$passwd = $parsed_data['db-pass'],
+				$port = $parsed_data['db-port']
+		);
+
+		if ($db->connect_error) {
+			$nx['error'] = true;
+			$nx['error-text'] = 'Failed to establish MySQL connection, please check your credentials.';
+		} else {
+			$db->query("CREATE DATABASE " . $parsed_data['nx-db']);
+
+			if ($db->error) {
+				$nx['error'] = true;
+				$nx['error-text'] = 'Failed to create database. You sure it doesn\'t exist already?';
+			} else {
+				$db->select_db($parsed_data['nx-db']);
+				$db->query("CREATE TABLE IF NOT EXISTS admin (
+								id INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+								user TINYTEXT NOT NULL,
+								pass TINYTEXT NOT NULL,
+								email TINYTEXT NOT NULL,
+								regdate INT NOT NULL
+				);");
+
+				switch ($parsed_data['nx-mode']) {
+					case 'simple':
+						$db->query("CREATE TABLE IF NOT EXISTS simple (
+										id INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+										ua TINYTEXT NOT NULL,
+										url TINYTEXT NOT NULL,
+										ref TINYTEXT NOT NULL,
+										visits INT NOT NULL,
+										time INT NOT NULL
+						);");
+					case 'advanced':
+						$db->query("CREATE TABLE IF NOT EXISTS advanced (
+										id INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+										ip TINYTEXT NOT NULL,
+										ua TINYTEXT NOT NULL,
+										xff TINYTEXT DEFAULT NULL
+						);");
+						$db->query("CREATE TABLE IF NOT EXISTS urls (
+										id INT UNSIGNED NOT NULL,
+										url TINYTEXT NOT NULL,
+										visits INT NOT NULL,
+										time INT NOT NULL
+						);");
+						$db->query("CREATE TABLE IF NOT EXISTS refs (
+										id INT UNSIGNED NOT NULL,
+										ref TINYTEXT DEFAULT NULL,
+										times INT NOT NULL
+						;)");
+				}
+
+				$user =& $parsed_data['admin-user'];
+				$pass =& $parsed_data['admin-pass'];
+				$email =& $parsed_data['admin-email'];
+				$now = time();
+
+				$db->query("INSERT INTO admin (user, pass, email, regdate)
+				                 VALUES ('$user', '$pass', '$email', $now);");
+
+				unset($parsed_data['admin-user']);
+				unset($parsed_data['admin-pass']);
+				unset($parsed_data['admin-email']);
+
+				$json = json_encode($parsed_data, 128);
+				$output = <<<TEXT
 <?php
 if (!defined('NX-ANALYTICS')) die('Go away.');
 
@@ -64,8 +133,10 @@ JSON;
 
 TEXT;
 
-		file_put_contents(dirname(__FILE__) . '/config.php', $output);
-		$nx['success'] = true;
+				file_put_contents(dirname(__FILE__) . '/config.php', $output);
+				$nx['success'] = true;
+			}
+		}
 	}
 }
 

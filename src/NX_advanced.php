@@ -18,12 +18,12 @@ class NX_advanced {
 		$ua  = $this->db->real_escape_string($_SERVER['HTTP_USER_AGENT']);
 		$xff = $this->db->real_escape_string($_SERVER['X_FORWARDED_FOR']);
 
-		$res = $this->db->query("SELECT id FROM core
+		$res = $this->db->query("SELECT id FROM advanced
 		               WHERE ip='$ip' AND ua='$ua' AND xff='$xff' LIMIT 1;");
 
 		if ($res->num_rows === 0) {
 			/* First time this client makes a contact, treat it differently. */
-			$this->db->query("INSERT INTO core (ip, ua, xff)
+			$this->db->query("INSERT INTO advanced (ip, ua, xff)
 			                       VALUES ('$ip', '$ua', '$xff');");
 
 			$id =& $this->db->insert_id;
@@ -33,7 +33,8 @@ class NX_advanced {
 			$this->db->query("INSERT INTO refs (id, ref, times)
 			                       VALUES ('$id', '$ref', 1);");
 		} else {
-			$id =& $res['id'];
+			$res = $res->fetch_assoc();
+			$id  =& $res['id'];
 
 			/* Check if this referer exists on the client's history. */
 			$res = $this->db->query("SELECT id FROM refs

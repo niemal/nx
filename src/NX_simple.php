@@ -25,7 +25,8 @@ class NX_simple {
 			                       VALUES ('$ua', '$url', '$ref', 1, $now);");
 		} else {
 			/* It has happened before, note it down. */
-			$id =& $res['id'];
+			$res = $res->fetch_assoc();
+			$id  =& $res['id'];
 			$this->db->query("UPDATE simple SET visits=visits+1
 			                                WHERE id='$id';");
 		}

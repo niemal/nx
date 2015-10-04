@@ -47,7 +47,8 @@ class NX
 			$this->config['db-host'],
 			$this->config['db-user'],
 			$this->config['db-pass'],
-			$this->config['nx-db']
+			$this->config['nx-db'],
+			$this->config['db-port']
 		);
 
 		if ($db->connect_errno) {
