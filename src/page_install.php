@@ -54,7 +54,6 @@ if (isset($_POST['submit'])) {
 
 	if($nx['error'] === false) {
 		$json = json_encode($parsed_data, 128);
-		$json = str_replace("'", "\\'", $json);
 		$output = <<<TEXT
 <?php
 if (!defined('NX-ANALYTICS')) die('Go away.');
@@ -62,6 +61,7 @@ if (!defined('NX-ANALYTICS')) die('Go away.');
 \$nx_config = <<<JSON
 $json
 JSON;
+
 TEXT;
 
 		file_put_contents(dirname(__FILE__) . '/config.php', $output);
@@ -98,12 +98,12 @@ TEXT;
 			<?php } else { ?>
 			<form action="<?php echo $_SERVER['REQUEST_URI']; ?>" method="post" class="content glass">
 				<div class="article">
-					<?php if ($nx['installed'] === true) { ?>
-					<h2>Error</h2>
-					<p>It seems like NX ANALYTICS is already installed in this system. If you continue, <b>the configuration will be overwritten</b>.</p>
-					<?php } else if ($nx['error'] === true) { ?>
+					<?php if ($nx['error'] === true) { ?>
 					<h2><?php echo $nx['error-h2']; ?></h2>
 					<p><?php echo $nx['error-text']; ?></p>
+					<?php } else if ($nx['installed'] === true) { ?>
+					<h2>Error</h2>
+					<p>It seems like NX ANALYTICS is already installed in this system. If you continue, <b>the configuration will be overwritten</b>.</p>
 					<?php } else { ?>
 					<h2>Installing</h2>
 					<p>We have detected that your installation requires setting up. We'll start by asking some things:</p>

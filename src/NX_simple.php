@@ -1,8 +1,15 @@
 <?php
 
 class NX_simple {
+	private $db;
+	private $config;
 
-	private function simple()
+	public function NX_simple($db, $config) {
+		$this->db = &$db;
+		$this->config = $config;
+	}
+
+	private function log()
 	{
 		$now = time();
 		$url = $this->db->real_escape_string($_SERVER['REQUEST_URI']);
