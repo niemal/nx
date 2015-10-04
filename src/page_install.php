@@ -107,7 +107,7 @@ if (isset($_POST['submit'])) {
 										id INT UNSIGNED NOT NULL,
 										ref TINYTEXT DEFAULT NULL,
 										times INT NOT NULL
-						;)");
+						);");
 				}
 
 				$user =& $parsed_data['admin-user'];
