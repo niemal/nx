@@ -3,14 +3,15 @@
 class NX
 {
 	private $db;
-	public $mode;
 	private $config;
+
+	public $mode;
 	public $error;
 
 	function __construct() {
 		define('NX-ANALYTICS', true);
 		$this->config = $this->getConfig();
-		$this->connectDb();
+		$this->db = $this->getDb();
 		$this->mode = $this->config['nx-mode'];
 	}
 
@@ -41,7 +42,7 @@ class NX
 		}
 	}
 
-	private function connectDb() {
+	private function getDb() {
 		$db = new mysqli(
 			$this->config['db-host'],
 			$this->config['db-user'],
@@ -53,14 +54,18 @@ class NX
 			$this->error('Connection failed to establish: [' . $db->connect_errno . '] ' . $db->connect_error);
 		}
 
-		$this->db = $db;
+		return $db;
 	}
 
-	public function error($err, $die=false) {
+	private function error($err, $die=false) {
+		if ($die === true) {
+			echo '[NX] Critical error: ' . $err;
+			die(-1);
+		}
+
 		$errs = $this->config['nx-errors'];
-		if($die === true || $errs === 'show') {
+		if ($errs === 'show') {
 			echo '[NX] Error: ' . $err . PHP_EOL;
-			die();
 		} else {
 			error_log("[NX] $err");
 		}
