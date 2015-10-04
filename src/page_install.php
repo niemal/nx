@@ -8,6 +8,7 @@ error_reporting(E_ALL); ini_set('display_errors', 1);
  **/
 
 $nx = [
+	'skip-install' => false,
 	'installed' => false,
 	'success' => false,
 	'error' => false,
@@ -16,49 +17,52 @@ $nx = [
 ];
 
 // Check if there is a config file
-if (file_exists(dirname(__FILE__).'/config.php')) {
+if (file_exists(dirname(__FILE__) . '/config.php')) {
 	$nx['installed'] = true;
-	$nx['error'] = true;
-	$nx['error-text'] = 'It seems like NX ANALYTICS is already installed in this system. If you continue, <b>config.php</b> will be overwritten.';
 }
 
 
 // Check if the install form was submitted
 if (isset($_POST['submit'])) {
-	$data = [];
-	$output = '<?php $nx_config = Array(';
+	$required_data = [
+		'admin-user',
+		'admin-pass',
+		'admin-email',
+		'db-user',
+		'db-pass',
+		'db-host',
+		'db-port',
+		'nx-mode',
+		'nx-errors',
+		'nx-db'
+	];
+	$parsed_data = [];
 
-	foreach ($_POST as $k => $v) {
-		if ($k == 'submit') continue;
-
-		$data[$k] = (!empty($v) ? $v : -1);
-
-		if ($data[$k] === -1) {
+	foreach($required_data as $k){
+		$parsed_data[$k] = (isset($_POST[$k]) && !empty($_POST[$k]) ? ''.$_POST[$k] : -1);
+		
+		if($parsed_data[$k] === -1){
 			$nx['error'] = true;
-			$nx['error-text'] = 'The provided form is missing information: ' . $k;
+			$nx['error-text'] = 'The uploaded form is missing information: ' . $k;
 			break;
-		} else if (!is_string($v)) {
+		} else if( strlen($parsed_data[$k]) < 4 || strlen($parsed_data[$k]) > 32 ){
 			$nx['error'] = true;
-			$nx['error-text'] = 'The following variable was sent in wrong format: ' . $k;
-			break;
-		} else if (strlen($v) < 4 || strlen($v) > 32) {
-			$nx['error'] = true;
-			$nx['error-text'] = 'Wrong length encountered (allowed range is 4~32) at: ' . $k;
-			break;
-		} else if (strpos($v, '\'') || strpos($k, '\'')) { // 1337 hax :*
-			$nx['error'] = true;
-			$nx['error-text'] = 'Quotation characters are not allowed.';
+			$nx['error-text'] = 'The element ' . $k . ' has incorrect length. Allowed range is between 4 and 32.';
 			break;
 		}
-
-		if (!strpos($k, 'admin'))
-			$output += '\'' . $k . '\' => \'' . $v . '\',';
 	}
 
+	if($nx['error'] === false) {
+		$json = json_encode($parsed_data, 128);
+		$json = str_replace("'", "\\'", $json);
+		$output = <<<TEXT
+<?php
+if (!defined('NX-ANALYTICS')) die('Go away.');
 
-	if (!$nx['error']) {
-		$output = rtrim($output, ',');
-		$output += ');';
+\$nx_config = <<<JSON
+$json
+JSON;
+TEXT;
 
 		file_put_contents(dirname(__FILE__) . '/config.php', $output);
 		$nx['success'] = true;
@@ -94,7 +98,10 @@ if (isset($_POST['submit'])) {
 			<?php } else { ?>
 			<form action="<?php echo $_SERVER['REQUEST_URI']; ?>" method="post" class="content glass">
 				<div class="article">
-					<?php if ($nx['error'] === true) { ?>
+					<?php if ($nx['installed'] === true) { ?>
+					<h2>Error</h2>
+					<p>It seems like NX ANALYTICS is already installed in this system. If you continue, <b>the configuration will be overwritten</b>.</p>
+					<?php } else if ($nx['error'] === true) { ?>
 					<h2><?php echo $nx['error-h2']; ?></h2>
 					<p><?php echo $nx['error-text']; ?></p>
 					<?php } else { ?>
@@ -160,14 +167,23 @@ if (isset($_POST['submit'])) {
 					<h2>Configuring NX</h2>
 					<p>Where do we store the data? What installation is the best for your website?</p>
 					<p>A <b>simple</b> install will log URLs, user agents and referers - very light and fast. <br/> An <b>advanced</b> install will log and track IP addresses (including those behind proxies), save and parse user agents, URLs and referers. This will allow the user to manipulate data in many ways, providing great details and powerful filters.</p>
+					<p>The error handling will determine how NX lets you know about errors. Choosing <b>show</b> will print all errors to the HTML, while <b>hide</b> will make the script fail silently and redirect errors to <a href="http://stackoverflow.com/a/5127884/4301778">your server's error log</a>.</p>
 
 					<div class="pure-form pure-form-aligned">
 						<fieldset>
 							<div class="pure-control-group">
 								<label for="nx-mode">Mode</label>
 								<select required name="nx-mode">
-									<option>simple</option>
-									<option>advanced</option>
+									<option value="simple">simple</option>
+									<option value="advanced">advanced</option>
+								</select>
+							</div>
+
+							<div class="pure-control-group">
+								<label for="nx-errors">Errors</label>
+								<select required name="nx-errors">
+									<option value="show">show</option>
+									<option value="hide">hide (be careful!)</option>
 								</select>
 							</div>
 

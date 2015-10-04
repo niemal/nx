@@ -18,7 +18,7 @@ define('NX-ANALYTICS', true);
 $method = $_SERVER['QUERY_STRING'];
 $method = preg_replace('/[^A-Za-z]/', '', $method);
 
-if (file_exists('src/config.json') === false && $method !== 'install') {
+if (file_exists('src/config.php') === false && $method !== 'install') {
 	header('Location: ' . dirname($_SERVER['PHP_SELF']) . '/?install');
 	die();
 }
