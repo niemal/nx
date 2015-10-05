@@ -33,14 +33,14 @@ if (isset($_POST['submit'])) {
 		'db-host',
 		'db-port',
 		'nx-mode',
-		'nx-errors', // why does this exist?
+		'nx-errors',
 		'nx-db'
 	];
 	$parsed_data = [];
 
 	foreach($required_data as $k){
 		$parsed_data[$k] = (isset($_POST[$k]) && !empty($_POST[$k]) ? ''.$_POST[$k] : -1);
-		$parsed_data[$k] = str_replace($parsed_data[$k], "'", "\\'");
+		$parsed_data[$k] = str_replace("'", "\\'", $parsed_data[$k]);
 
 		if($parsed_data[$k] === -1){
 			$nx['error'] = true;
@@ -55,17 +55,18 @@ if (isset($_POST['submit'])) {
 
 	if ($nx['error'] === false) {
 		$db = new mysqli(
-				$host = $parsed_data['db-host'],
-				$username = $parsed_data['db-user'],
-				$passwd = $parsed_data['db-pass'],
-				$port = $parsed_data['db-port']
+				$parsed_data['db-host'],
+				$parsed_data['db-user'],
+				$parsed_data['db-pass'],
+				"",
+				$parsed_data['db-port']
 		);
 
 		if ($db->connect_error) {
 			$nx['error'] = true;
 			$nx['error-text'] = 'Failed to establish MySQL connection, please check your credentials.';
 		} else {
-			$db->query("CREATE DATABASE " . $parsed_data['nx-db']);
+			$db->query("CREATE DATABASE `" .$parsed_data['nx-db']. "`;");
 
 			if ($db->error) {
 				$nx['error'] = true;
@@ -90,6 +91,7 @@ if (isset($_POST['submit'])) {
 										visits INT NOT NULL,
 										time INT NOT NULL
 						);");
+						break;
 					case 'advanced':
 						$db->query("CREATE TABLE IF NOT EXISTS advanced (
 										id INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
@@ -108,12 +110,16 @@ if (isset($_POST['submit'])) {
 										ref TINYTEXT DEFAULT NULL,
 										times INT NOT NULL
 						);");
+						break;
 				}
 
 				$user =& $parsed_data['admin-user'];
 				$pass =& $parsed_data['admin-pass'];
 				$email =& $parsed_data['admin-email'];
 				$now = time();
+
+				$parsed_data['salt'] = 'LyUrA4aCPhd7I717';
+				$pass = hash('sha256', $parsed_data['salt'].$pass);
 
 				$db->query("INSERT INTO admin (user, pass, email, regdate)
 				                 VALUES ('$user', '$pass', '$email', $now);");
@@ -163,7 +169,14 @@ TEXT;
 			<div class="content glass">
 				<div class="article">
 					<h2>Congratulations!</h2>
-					<p>NX ANALYTICS was installed successfully! Now head over to the <a href="?admin">admin panel</a>.</p>
+					<p>NX ANALYTICS has been installed successfully! You can now head over to the <a href="?admin">admin panel</a>.</p>
+				</div>
+			</div>
+			<?php } else if ($nx['installed'] === true) { ?>
+			<div class="content glass">
+				<div class="article">
+					<h2>Already installed!</h2>
+					<p>It seems like NX ANALYTICS is already installed on this system. <br/> If you wish to re-install please delete your <b>config.php</b> and refresh this page.</p>
 				</div>
 			</div>
 			<?php } else { ?>
@@ -172,9 +185,6 @@ TEXT;
 					<?php if ($nx['error'] === true) { ?>
 					<h2><?php echo $nx['error-h2']; ?></h2>
 					<p><?php echo $nx['error-text']; ?></p>
-					<?php } else if ($nx['installed'] === true) { ?>
-					<h2>Error</h2>
-					<p>It seems like NX ANALYTICS is already installed in this system. If you continue, <b>the configuration will be overwritten</b>.</p>
 					<?php } else { ?>
 					<h2>Installing</h2>
 					<p>We have detected that your installation requires setting up. We'll start by asking some things:</p>
@@ -207,7 +217,7 @@ TEXT;
 
 				<div class="article">
 					<h2>About your servers</h2>
-					<p>We also need to know the credentials for your MySQL install. A database will be created by this script.</p>
+					<p>We also need to know the credentials of your MySQL install. A database will be created by this script.</p>
 
 					<div class="pure-form pure-form-aligned">
 						<fieldset>
@@ -236,8 +246,8 @@ TEXT;
 
 				<div class="article">
 					<h2>Configuring NX</h2>
-					<p>Where do we store the data? What installation is the best for your website?</p>
-					<p>A <b>simple</b> install will log URLs, user agents and referers - very light and fast. <br/> An <b>advanced</b> install will log and track IP addresses (including those behind proxies), save and parse user agents, URLs and referers. This will allow the user to manipulate data in many ways, providing great details and powerful filters.</p>
+					<p>Where do we store the data? What type of installation is the best for your website?</p>
+					<p>A <b>simple</b> installation will log URLs, user agents and referers - very light and fast. <br/> An <b>advanced</b> one will log and track IP addresses (including those behind proxies), save and parse user agents, URLs and referers. This will allow the user to manipulate data in many ways, providing great details and powerful filters.</p>
 					<p>The error handling will determine how NX lets you know about errors. Choosing <b>show</b> will print all errors to the HTML, while <b>hide</b> will make the script fail silently and redirect errors to <a href="http://stackoverflow.com/a/5127884/4301778">your server's error log</a>.</p>
 
 					<div class="pure-form pure-form-aligned">

@@ -3,7 +3,7 @@
  * Every array returned is supposed to be associative and sorted, high-to-low.
  **/
 
-require_once('nx.php');
+require_once('NX.php');
 
 class SIMPLE extends NX
 {
