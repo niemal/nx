@@ -80,6 +80,13 @@ if (isset($_POST['submit'])) {
 								email TINYTEXT NOT NULL,
 								regdate INT NOT NULL
 				);");
+				$db->query("CREATE TABLE IF NOT EXISTS sessions (
+				                id INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+				                user TINYTEXT NOT NULL,
+				                fingerprint TINYTEXT NOT NULL,
+				                logged_time INT NOT NULL,
+				                logged_at_time INT NOT NULL
+				);");
 
 				switch ($parsed_data['nx-mode']) {
 					case 'simple':
@@ -155,8 +162,8 @@ TEXT;
 	<link rel="stylesheet" href="http://yui.yahooapis.com/pure/0.6.0/pure-min.css">
 	<link rel="stylesheet" href="assets/install.css">
 </head>
-<body>
 
+<body>
 	<div id="layout">
 		<div id="main">
 			<div class="header">

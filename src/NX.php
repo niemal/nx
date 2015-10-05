@@ -2,14 +2,13 @@
 
 class NX
 {
-	private $db;
-	private $config;
-
+	public $db;
+	public $config;
 	public $mode;
 	public $error;
 
 	function __construct() {
-		define('NX-ANALYTICS', true);
+		if (!defined('NX-ANALYTICS')) define('NX-ANALYTICS', true);
 		$this->config = $this->getConfig();
 		$this->db = $this->getDb();
 		$this->mode = $this->config['nx-mode'];
@@ -27,7 +26,7 @@ class NX
 		}
 	}
 
-	private function getConfig() {
+	public function getConfig() {
 		// install script makes sure everything is correctly set
 		$filename = dirname(__FILE__) . '/config.php';
 		if ( file_exists($filename) ) {
