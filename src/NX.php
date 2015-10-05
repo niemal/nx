@@ -58,16 +58,12 @@ class NX
 	}
 
 	private function error($err, $die=false) {
-		if ($die === true) {
-			echo '[NX] Critical error: ' . $err;
-			die(-1);
-		}
-
 		$errs = $this->config['nx-errors'];
 		if ($errs === 'show') {
-			echo '[NX] Error: ' . $err . PHP_EOL;
+			echo '[NX] Error: ' . htmlspecialchars($err) . PHP_EOL;//because this echo will force output to HTML during database outages
 		} else {
 			error_log("[NX] $err");
 		}
+		if ($die === true) die(-1);
 	}
 }
