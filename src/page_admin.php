@@ -146,9 +146,9 @@
             <div class="header">
                 <?php if ($logged) { ?>
                 <h1>Welcome home!</h1>
-                <p>Pleasure to finally meet you, <?php echo $user ?>!</p>
+                <p>Pleasure to finally meet you, <?php echo htmlspecialchars($user); ?>!</p>
 
-                <form action="<?php echo $_SERVER['REQUEST_URI']; ?>" method="post" class="content glass">
+                <form action="<?php echo htmlspecialchars($_SERVER['REQUEST_URI']); ?>" method="post" class="content glass">
                     <p><button type="submit" name="logout">Logout</button></p>
                 </form>
                 <?php } else { ?>
@@ -157,7 +157,7 @@
             </div>
 
             <?php if (!$logged) { ?>
-            <form action="<?php echo $_SERVER['REQUEST_URI']; ?>" method="post" class="content glass">
+            <form action="<?php echo htmlspecialchars($_SERVER['REQUEST_URI']); ?>" method="post" class="content glass">
                 <div class="article">
                     <?php if ($err['error'] === true) { ?>
                     <h2><?php echo $err['error-h2']; ?></h2>
