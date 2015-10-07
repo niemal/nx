@@ -15,7 +15,7 @@
 
 define('NX-ANALYTICS', true);
 
-$method = $_SERVER['QUERY_STRING'];
+$method = key($_GET);//retrieve the first query argument name from the GET associative array - allows support for secondary arguments.
 $method = preg_replace('/[^A-Za-z]/', '', $method);
 
 if (file_exists('src/config.php') === false && $method !== 'install') {
