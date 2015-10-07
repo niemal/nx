@@ -92,6 +92,20 @@ The content `<div>` is where all your content goes.
 	background-color: rgb(255, 255, 255);
 	background-color: rgba(255, 255, 255, 0.1);
 }
+.pure-form input, .pure-form select, form button,
+.pure-form input:invalid, .pure-form select:invalid,
+.pure-form input:focus:invalid, .pure-form select:focus:invalid {
+	color: #eee;
+	border: 1px solid #fff !important;
+}
+
+.pure-form input:focus:invalid, .pure-form select:focus:invalid {
+	border: 1px solid #f00 !important;
+}
+
+.button-xlarge {
+	font-size: 125%;
+}
 
 
 /*

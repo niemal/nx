@@ -34,7 +34,7 @@
                 }
             }
         }
-    } else if (isset($_POST['logout'])) {
+    } else if (isset($_GET['logout'])) {
         logout($nx, $user);
         $logged = false;
     }
@@ -63,7 +63,7 @@
                     <li class="pure-menu-item"><a href="#" class="pure-menu-link">Dashboard</a></li>
                     <li class="pure-menu-item"><a href="#" class="pure-menu-link">Pretty graphs</a></li>
                     <li class="pure-menu-item"><a href="#" class="pure-menu-link">Tables and stuff</a></li>
-                    <li class="pure-menu-item"><a href="#" class="pure-menu-link">Logout</a></li>
+                    <li class="pure-menu-item"><a href="<?php echo htmlspecialchars($_SERVER['REQUEST_URI']); ?>" class="pure-menu-link">Logout</a></li>
                 </ul>
             </div>
         </div>
@@ -153,19 +153,19 @@
                 </div>
 
                 <div class="pure-form pure-form-aligned">
-                    <fieldset>
+                    <fieldset style="text-align: center">
                         <div class="pure-control-group">
-                            <label for="user">Username</label>
-                            <input required name="user" type="text" placeholder="user">
+                            <input required name="user" type="text" placeholder="Username">
                         </div>
 
                         <div class="pure-control-group">
-                            <label for="pass">Password</label>
-                            <input required name="pass" type="password" placeholder="pass">
+                            <input required name="pass" type="password" placeholder="Password">
                         </div>
 
-                        <p>Remember me&nbsp;&nbsp;<input type="checkbox" name="remember" value="me"></p>
-                        <p><button type="submit" name="submit">Login</button></p>
+                        <div>
+                            <p>Remember me&nbsp;&nbsp;<input type="checkbox" name="remember" value="me"></p>
+                            <button class="pure-button button-xlarge" type="submit" name="submit">Login</button>
+                        </div>
                     </fieldset>
                 </div>
             </form>

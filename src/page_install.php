@@ -158,7 +158,7 @@ TEXT;
 <!DOCTYPE html><html>
 <head>
 	<meta charset="utf-8">
-	<title>Install | NX ANALYTICS</title>
+	<title>Install | NX</title>
 	<link rel="stylesheet" href="http://yui.yahooapis.com/pure/0.6.0/pure-min.css">
 	<link rel="stylesheet" href="assets/install.css">
 </head>
@@ -168,7 +168,7 @@ TEXT;
 		<div id="main">
 			<div class="header">
 				<h1>Installation</h1>
-				<h2>Welcome to NX ANALYTICS!</h2>
+				<h2>Welcome to <b>nx analytics</b>.</h2>
 			</div>
 
 
@@ -176,14 +176,14 @@ TEXT;
 			<div class="content glass">
 				<div class="article">
 					<h2>Congratulations!</h2>
-					<p>NX ANALYTICS has been installed successfully! You can now head over to the <a href="?admin">admin panel</a>.</p>
+					<p><b>nx analytics</b> has been installed successfully! You can now head over to the <a href="?admin">admin panel</a>.</p>
 				</div>
 			</div>
 			<?php } else if ($nx['installed'] === true) { ?>
 			<div class="content glass">
 				<div class="article">
 					<h2>Already installed!</h2>
-					<p>It seems like NX ANALYTICS is already installed on this system. <br/> If you wish to re-install please delete your <b>config.php</b> and refresh this page.</p>
+					<p>It seems like <b>nx analytics</b> is already installed on this system. <br/> If you wish to re-install please delete your <b>config.php</b> and refresh this page.</p>
 				</div>
 			</div>
 			<?php } else { ?>
