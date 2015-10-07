@@ -31,7 +31,7 @@ switch ($method) {
 
 	/* Admin panel */
 	case 'admin':
-		require_once('src/page_admin.php');
+		require_once('src/admin/page_admin.php');
 		break;
 
 	/* Install script */
