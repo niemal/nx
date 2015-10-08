@@ -3,13 +3,108 @@
  * Every array returned is supposed to be associative and sorted, high-to-low.
  **/
 
-require_once('NX.php');
-
-class SIMPLE extends NX
+class SIMPLE
 {
-	function __construct()
+	public $db;
+
+	public function SIMPLE($db)
 	{
-		parent::__construct();
+		$this->db =& $db;
+	}
+
+
+	/**
+	 * browsers() and render_engines() were made according to:
+	 *	https://developer.mozilla.org/en-US/docs/Browser_detection_using_the_user_agent
+	 **/
+	public function browsers()
+	{
+		$out = [];
+
+		$res = $this->db->query("SELECT count(*) as n FROM simple
+		WHERE ua NOT LIKE '%firefox/%' AND ua NOT LIKE '%seamonkey/%' AND ua NOT LIKE '%chrome/%'
+		AND ua NOT LIKE '%chromium/%' AND ua NOT LIKE '%safari/%' AND ua NOT LIKE '%opr/%'
+		AND ua NOT LIKE '%opera/%' AND ua NOT LIKE '%;msie %' AND ua NOT LIKE '%trident/%';");
+		$res = $res->fetch_assoc();
+		$out['Unknown'] = intval($res['n']);
+
+		$res = $this->db->query("SELECT count(*) as n FROM simple
+		WHERE ua LIKE '%firefox/%' AND ua NOT LIKE '%seamonkey/%';");
+		$res = $res->fetch_assoc();
+		$out['Firefox'] = intval($res['n']);
+
+		$res = $this->db->query("SELECT count(*) as n FROM simple
+		WHERE ua LIKE '%seamonkey/%';");
+		$res = $res->fetch_assoc();
+		$out['Seamonkey'] = intval($res['n']);
+
+		$res = $this->db->query("SELECT count(*) as n FROM simple
+		WHERE ua LIKE '%chrome/%' AND ua NOT LIKE '%chromium/%';");
+		$res = $res->fetch_assoc();
+		$out['Chrome'] = intval($res['n']);
+
+		$res = $this->db->query("SELECT count(*) as n FROM simple
+		WHERE ua LIKE '%chromium/%';");
+		$res = $res->fetch_assoc();
+		$out['Chromium'] = intval($res['n']);
+
+		$res = $this->db->query("SELECT count(*) as n FROM simple
+		WHERE ua LIKE '%safari/%' AND ua NOT LIKE '%chrome/%' AND ua NOT LIKE '%chromium/%';");
+		$res = $res->fetch_assoc();
+		$out['Safari'] = intval($res['n']);
+
+		$res = $this->db->query("SELECT count(*) as n FROM simple
+		WHERE ua LIKE '%opr/%' OR ua LIKE '%opera/%';");
+		$res = $res->fetch_assoc();
+		$out['Opera'] = intval($res['n']);
+
+		$res = $this->db->query("SELECT count(*) as n FROM simple
+		WHERE ua LIKE '%;msie %' OR ua LIKE '%trident/%';");
+		$res = $res->fetch_assoc();
+		$out['IE'] = intval($res['n']);
+
+		arsort($out);
+		return $out;
+	}
+
+	public function render_engines()
+	{
+		$out = [];
+
+		$res = $this->db->query("SELECT count(*) as n FROM simple
+		WHERE ua NOT LIKE '%gecko/%' AND ua NOT LIKE '%applewebkit/%'
+		AND ua NOT LIKE '%opera/%' AND ua NOT LIKE '%trident/%'
+		AND ua NOT LIKE '%chrome/%';");
+		$res = $res->fetch_assoc();
+		$out['Unknown'] = intval($res['n']);
+
+		$res = $this->db->query("SELECT count(*) as n FROM simple
+		WHERE ua LIKE '%gecko/%';");
+		$res = $res->fetch_assoc();
+		$out['Gecko'] = intval($res['n']);
+
+		$res = $this->db->query("SELECT count(*) as n FROM simple
+		WHERE ua LIKE '%applewebkit/%';");
+		$res = $res->fetch_assoc();
+		$out['Webkit'] = intval($res['n']);
+
+		$res = $this->db->query("SELECT count(*) as n FROM simple
+		WHERE ua LIKE '%opera/%';");
+		$res = $res->fetch_assoc();
+		$out['Presto'] = intval($res['n']);
+
+		$res = $this->db->query("SELECT count(*) as n FROM simple
+		WHERE ua LIKE '%trident/%';");
+		$res = $res->fetch_assoc();
+		$out['Trident'] = intval($res['n']);
+
+		$res = $this->db->query("SELECT count(*) as n FROM simple
+		WHERE ua LIKE '%chrome/%';");
+		$res = $res->fetch_assoc();
+		$out['Blink'] = intval($res['n']);
+
+		arsort($out);
+		return $out;
 	}
 
 

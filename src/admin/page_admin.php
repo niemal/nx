@@ -36,7 +36,8 @@
         }
     } else if (isset($_GET['logout'])) {
         logout($nx, $user);
-        $logged = false;
+        header('HTTP/1.1 302 Moved Temporarily');
+        header('Location: '. dirname($_SERVER['PHP_SELF']) .'/?admin');
     }
 
 
@@ -52,48 +53,81 @@
 <body>
     <div id="layout">
 
-    <?php if ($logged) { ?>
+    <?php
+    if ($logged) {
+        require_once('src/stats.php');
+
+         $stats = new SIMPLE($nx->db); ?>
         <a href="#menu" id="menuLink" class="menu-link"><span></span></a>
 
         <div id="menu" class="dark-glass">
             <div class="pure-menu">
-                <a class="pure-menu-heading dark-glass" href="#">NX ANALYTICS</a>
+                <a class="pure-menu-heading dark-glass" href="#">nx analytics</a>
 
                 <ul class="pure-menu-list">
                     <li class="pure-menu-item"><a href="#" class="pure-menu-link">Dashboard</a></li>
-                    <li class="pure-menu-item"><a href="#" class="pure-menu-link">Pretty graphs</a></li>
-                    <li class="pure-menu-item"><a href="#" class="pure-menu-link">Tables and stuff</a></li>
-                    <li class="pure-menu-item"><a href="<?php echo htmlspecialchars($_SERVER['REQUEST_URI']); ?>" class="pure-menu-link">Logout</a></li>
+                    <li class="pure-menu-item"><a href="#" class="pure-menu-link">Settings</a></li>
+                    <li class="pure-menu-item"><a href="<?php echo htmlspecialchars($_SERVER['REQUEST_URI']).'&logout=1'; ?>" class="pure-menu-link">Logout</a></li>
                 </ul>
             </div>
         </div>
 
         <div id="main">
             <div class="header">
-                <h1>Title</h1>
-                <h2>Whatever</h2>
+                <h1>Dashboard</h1>
+                <h2>Mode: <i><?php echo $nx->config['nx-mode']; ?></i></h2>
             </div>
 
             <div class="content glass">
                 <div class="article">
-                    <h2 class="article-h2">Title</h2>
-                    <p>Welcome and stuff</p>
+                    <h2 class="article-h2">Web browsers</h2>
                 </div>
 
-                <div class="pure-g">
-                    <div class="pure-u-1-4">
-                        <img class="pure-img-responsive" src="http://farm8.staticflickr.com/7357/9086701425_fda3024927.jpg">
-                    </div>
-                    <div class="pure-u-1-4">
-                        <img class="pure-img-responsive" src="http://farm3.staticflickr.com/2813/9069585985_80da8db54f.jpg">
-                    </div>
-                    <div class="pure-u-1-4">
-                        <img class="pure-img-responsive" src="http://farm6.staticflickr.com/5456/9121446012_c1640e42d0.jpg">
-                    </div>
-                    <div class="pure-u-1-4">
-                        <img class="pure-img-responsive" src="http://farm3.staticflickr.com/2875/9069037713_1752f5daeb.jpg">
-                    </div>
+                <table class="pure-table pure-table-bordered" style="width: 100%">
+                    <thead>
+                        <tr>
+                            <th>Browser</th>
+                            <th>#</th>
+                        </tr>
+                    </thead>
+
+                    <tbody>
+                        <?php
+                        $browsers = $stats->browsers();
+                        foreach ($browsers as $name => $num) { ?>
+                        <tr>
+                            <td><?php echo $name; ?></td>
+                            <td><?php echo $num; ?></td>
+                        </tr>
+                        <?php } ?>
+                    </tbody>
+                </table>
+            </div>
+
+            <div class="content glass">
+                <div class="article">
+                    <h2 class="article-h2">Web browser engines</h2>
                 </div>
+
+                <table class="pure-table pure-table-bordered" style="width: 100%">
+                    <thead>
+                        <tr>
+                            <th>Engine</th>
+                            <th>#</th>
+                        </tr>
+                    </thead>
+
+                    <tbody>
+                        <?php
+                        $engines = $stats->render_engines();
+                        foreach ($engines as $name => $num) { ?>
+                        <tr>
+                            <td><?php echo $name; ?></td>
+                            <td><?php echo $num; ?></td>
+                        </tr>
+                        <?php } ?>
+                    </tbody>
+                </table>
             </div>
         </div>
 
@@ -144,7 +178,7 @@
                 <h1>Login</h1>
             </div>
 
-            <form action="<?php echo htmlspecialchars($_SERVER['REQUEST_URI']); ?>" method="post" class="content glass">
+            <form action="<?php echo htmlspecialchars($_SERVER['REQUEST_URI']); ?>" method="post" class="content glass" style="text-align: center">
                 <div class="article">
                     <?php if ($err['error'] === true) { ?>
                     <h2><?php echo $err['error-h2']; ?></h2>
@@ -153,7 +187,7 @@
                 </div>
 
                 <div class="pure-form pure-form-aligned">
-                    <fieldset style="text-align: center">
+                    <fieldset>
                         <div class="pure-control-group">
                             <input required name="user" type="text" placeholder="Username">
                         </div>

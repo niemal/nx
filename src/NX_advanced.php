@@ -14,9 +14,13 @@ class NX_advanced {
 		$now = time();
 		$ip  = $this->db->real_escape_string($_SERVER['REMOTE_ADDR']);
 		$url = $this->db->real_escape_string($_SERVER['REQUEST_URI']);
-		$ref = $this->db->real_escape_string($_SERVER['HTTP_REFERER']);
 		$ua  = $this->db->real_escape_string($_SERVER['HTTP_USER_AGENT']);
 		$xff = $this->db->real_escape_string($_SERVER['X_FORWARDED_FOR']);
+
+		if (isset($_SERVER['HTTP_REFERER']))
+			$ref = $this->db->real_escape_string($_SERVER['HTTP_REFERER']);
+		else
+			$ref = '';
 
 		$res = $this->db->query("SELECT id FROM advanced
 		               WHERE ip='$ip' AND ua='$ua' AND xff='$xff' LIMIT 1;");

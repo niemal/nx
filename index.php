@@ -40,7 +40,9 @@ switch ($method) {
 		break;
 
 	default:
-		echo 'You shouldnt be here...';
+		require_once('src/NX.php');
+		$nx = new NX();
+		$nx->init();
 		break;
 }
 

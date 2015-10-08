@@ -92,6 +92,7 @@ if (isset($_POST['submit'])) {
 					case 'simple':
 						$db->query("CREATE TABLE IF NOT EXISTS simple (
 										id INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+										name TINYTEXT NOT NULL,
 										ua TINYTEXT NOT NULL,
 										url TINYTEXT NOT NULL,
 										ref TINYTEXT NOT NULL,
