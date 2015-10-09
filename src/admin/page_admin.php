@@ -47,6 +47,7 @@
 <meta charset="utf-8">
     <title><?php if (!$logged) { ?>Login<?php } else { ?>Home<?php } ?> | NX</title>
     <link rel="stylesheet" href="http://yui.yahooapis.com/pure/0.6.0/pure-min.css">
+    <link rel="stylesheet" href="assets/chartist.min.css">
     <link rel="stylesheet" href="assets/admin.css">
 </head>
 
@@ -80,58 +81,69 @@
 
             <div class="content glass">
                 <div class="article">
-                    <h2 class="article-h2">Web browsers</h2>
+                    <h2 class="article-h2" style="text-align: center">Last week's visits</h2>
                 </div>
-
-                <table class="pure-table pure-table-bordered" style="width: 100%">
-                    <thead>
-                        <tr>
-                            <th>Browser</th>
-                            <th>#</th>
-                        </tr>
-                    </thead>
-
-                    <tbody>
-                        <?php
-                        $browsers = $stats->browsers();
-                        foreach ($browsers as $name => $num) { ?>
-                        <tr>
-                            <td><?php echo $name; ?></td>
-                            <td><?php echo $num; ?></td>
-                        </tr>
-                        <?php } ?>
-                    </tbody>
-                </table>
+                <?php $last_week = $stats->last_weeks_visits(); ?>
+                <div class="ct-chart"></div>
+                <p align="middle">Total: <b><?php echo $last_week['total'] ?></b></p>
             </div>
 
-            <div class="content glass">
-                <div class="article">
-                    <h2 class="article-h2">Web browser engines</h2>
+            <div style="text-align: center">
+                <div id="browsers" class="content glass">
+                    <div class="article">
+                        <h2 class="article-h2">Web browsers</h2>
+                    </div>
+
+                    <table class="pure-table pure-table-bordered" style="width: 100%">
+                        <thead>
+                            <tr>
+                                <th>Browser</th>
+                                <th>#</th>
+                            </tr>
+                        </thead>
+
+                        <tbody>
+                            <?php
+                            $browsers = $stats->browsers();
+                            foreach ($browsers as $name => $num) { ?>
+                            <tr>
+                                <td><?php echo $name; ?></td>
+                                <td><?php echo $num; ?></td>
+                            </tr>
+                            <?php } ?>
+                        </tbody>
+                    </table>
                 </div>
 
-                <table class="pure-table pure-table-bordered" style="width: 100%">
-                    <thead>
-                        <tr>
-                            <th>Engine</th>
-                            <th>#</th>
-                        </tr>
-                    </thead>
+                <div id="rend_eng" class="content glass">
+                    <div class="article">
+                        <h2 class="article-h2">Web browser engines</h2>
+                    </div>
 
-                    <tbody>
-                        <?php
-                        $engines = $stats->render_engines();
-                        foreach ($engines as $name => $num) { ?>
-                        <tr>
-                            <td><?php echo $name; ?></td>
-                            <td><?php echo $num; ?></td>
-                        </tr>
-                        <?php } ?>
-                    </tbody>
-                </table>
+                    <table class="pure-table pure-table-bordered" style="width: 100%">
+                        <thead>
+                            <tr>
+                                <th>Engine</th>
+                                <th>#</th>
+                            </tr>
+                        </thead>
+
+                        <tbody>
+                            <?php
+                            $engines = $stats->render_engines();
+                            foreach ($engines as $name => $num) { ?>
+                            <tr>
+                                <td><?php echo $name; ?></td>
+                                <td><?php echo $num; ?></td>
+                            </tr>
+                            <?php } ?>
+                        </tbody>
+                    </table>
+                </div>
             </div>
         </div>
 
-
+    <script src="assets/chartist.min.js" type="text/javascript"></script>
     <script>
         (function (window, document) {
 
@@ -168,6 +180,27 @@
                 toggleClass(menu, active);
                 toggleClass(menuLink, active);
             };
+
+            // last week's visits | chartist attempt
+            var data = {
+              labels: <?php echo $last_week['labels']; ?>,
+              series: [
+                <?php echo $last_week['series']; ?>
+              ]
+            };
+
+            var options = {
+                axisY: {
+                    onlyInteger: true
+                },
+                lineSmooth: Chartist.Interpolation.simple({
+                    divisor: 2
+                }),
+                low: 0,
+                showArea: true
+            };
+
+            var chart = new Chartist.Line('.ct-chart', data, options);
         }(this, this.document));
     </script>
 

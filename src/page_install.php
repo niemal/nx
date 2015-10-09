@@ -88,6 +88,12 @@ if (isset($_POST['submit'])) {
 				                logged_at_time INT NOT NULL
 				);");
 
+
+				$db->query("CREATE TABLE IF NOT EXISTS refs (
+								id INT UNSIGNED NOT NULL,
+								ref TINYTEXT DEFAULT NULL,
+								times INT NOT NULL
+				);");
 				switch ($parsed_data['nx-mode']) {
 					case 'simple':
 						$db->query("CREATE TABLE IF NOT EXISTS simple (
@@ -97,7 +103,8 @@ if (isset($_POST['submit'])) {
 										url TINYTEXT NOT NULL,
 										ref TINYTEXT NOT NULL,
 										visits INT NOT NULL,
-										time INT NOT NULL
+										date INT NOT NULL,
+										ts INT NOT NULL
 						);");
 						break;
 					case 'advanced':
@@ -112,11 +119,6 @@ if (isset($_POST['submit'])) {
 										url TINYTEXT NOT NULL,
 										visits INT NOT NULL,
 										time INT NOT NULL
-						);");
-						$db->query("CREATE TABLE IF NOT EXISTS refs (
-										id INT UNSIGNED NOT NULL,
-										ref TINYTEXT DEFAULT NULL,
-										times INT NOT NULL
 						);");
 						break;
 				}

@@ -56,7 +56,6 @@ The content `<div>` is where all your content goes.
 	margin-bottom: 50px;
 	line-height: 1.6em;
 }
-
 .header {
 	margin: 0;
 	color: #eee;
@@ -107,7 +106,30 @@ The content `<div>` is where all your content goes.
 .button-xlarge {
 	font-size: 125%;
 }
+#browsers {
+	display: inline-block;
+	min-width: 20%;
+	margin-right: 100px;
+}
+#rend_eng {
+	display: inline-block;
+}
 
+/* chart thingie */
+.ct-series-a .ct-point {
+	stroke: white;
+}
+.ct-series-a .ct-bar,
+.ct-series-a .ct-line,
+.ct-series-a .ct-slice-donut {
+	stroke: #CCC;
+}
+.ct-series-a .ct-area {
+	fill: #CCC;
+}
+.ct-label {
+	color: #CCC;
+}
 
 /*
 The `#menu` `<div>` is the parent `<div>` that contains the `.pure-menu` that
@@ -257,5 +279,15 @@ small screens.
 	#layout.active {
 		position: relative;
 		left: 150px;
+	}
+
+	/* nl css-bomb */
+	#browsers {
+		margin-right: 0;
+		min-width: 0;
+		display: block;
+	}
+	#rend_eng {
+		display: block;
 	}
 }
