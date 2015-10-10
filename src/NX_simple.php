@@ -26,18 +26,17 @@ class NX_simple {
 			$ref = 'N/A';
 
 		if (isset($_SERVER['SERVER_NAME']))
-			$name = $this->db->real_escape_string($_SERVER['SERVER_NAME']);
+			$uri = $this->db->real_escape_string($_SERVER['SERVER_NAME']);
 		else
-			$name = 'N/A';
+			$uri = 'N/A';
 
 
-		$res = $this->db->query("SELECT id FROM simple
-		WHERE name='$name' AND date='$date' AND ua='$ua' AND url='$url' LIMIT 1;");
+		$res = $this->db->query("SELECT id FROM simple WHERE uri='$uri' AND date='$date' AND ua='$ua' AND url='$url' LIMIT 1;");
 
 		if ($res->num_rows === 0) {
 			/* First time this case happens, treat it appropriately. */
-			$this->db->query("INSERT INTO simple (ua, url, name, ref, visits, date, ts)
-			                       VALUES ('$ua', '$url', '$name', '$ref', 1, $date, $ts);");
+			$this->db->query("INSERT INTO simple (ua, url, uri, ref, visits, date, ts)
+			                       VALUES ('$ua', '$url', '$uri', '$ref', 1, $date, $ts);");
 			$id =& $this->db->insert_id;
 			$this->db->query("INSERT INTO refs (id, ref, times)
                                    VALUES ('$id', '$ref', 1);");
@@ -48,8 +47,7 @@ class NX_simple {
 			$this->db->query("UPDATE simple SET visits=visits+1 WHERE id='$id';");
 
 			/* Check if this referer exists on the client's history. */
-			$res = $this->db->query("SELECT id FROM refs
-			WHERE id='$id' AND ref='$ref' LIMIT 1;");
+			$res = $this->db->query("SELECT id FROM refs WHERE id='$id' AND ref='$ref' LIMIT 1;");
 
 			if ($res->num_rows === 0) {
 				/* First time this client contacts with this referer, note it down. */

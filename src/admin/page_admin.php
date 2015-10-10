@@ -47,18 +47,19 @@
 <meta charset="utf-8">
     <title><?php if (!$logged) { ?>Login<?php } else { ?>Home<?php } ?> | NX</title>
     <link rel="stylesheet" href="http://yui.yahooapis.com/pure/0.6.0/pure-min.css">
+    <link rel="stylesheet" href="http://yui.yahooapis.com/pure/0.6.0/grids-responsive-min.css">
     <link rel="stylesheet" href="assets/chartist.min.css">
     <link rel="stylesheet" href="assets/admin.css">
 </head>
 
 <body>
     <div id="layout">
-
     <?php
-    if ($logged) {
-        require_once('src/stats.php');
+        if ($logged) {
+            require_once('src/stats.php');
 
-         $stats = new SIMPLE($nx->db); ?>
+            $stats = new SIMPLE($nx->db);
+    ?>
         <a href="#menu" id="menuLink" class="menu-link"><span></span></a>
 
         <div id="menu" class="dark-glass">
@@ -88,38 +89,63 @@
                 <p align="middle">Total: <b><?php echo $last_week['total'] ?></b></p>
             </div>
 
-            <div style="text-align: center">
-                <div id="browsers" class="content glass">
-                    <div class="article">
-                        <h2 class="article-h2">Web browsers</h2>
-                    </div>
 
+            <div class="pure-g" style="text-align: center">
+
+                <div class="content glass pure-u-1 pure-u-md-1-5">
+                    <div class="article">
+                        <h2 class="article-h2" style="text-align: center">Most recent visited URIs</h2>
+                    </div>
+                    <?php $recent_visits = $stats->most_recent_uris(); ?>
                     <table class="pure-table pure-table-bordered" style="width: 100%">
                         <thead>
                             <tr>
-                                <th>Browser</th>
-                                <th>#</th>
+                                <th>URI</th>
+                                <th>URL</th>
                             </tr>
                         </thead>
 
                         <tbody>
-                            <?php
-                            $browsers = $stats->browsers();
-                            foreach ($browsers as $name => $num) { ?>
+                            <?php foreach ($recent_visits as $visit) { ?>
                             <tr>
-                                <td><?php echo $name; ?></td>
-                                <td><?php echo $num; ?></td>
+                                <td><?php echo $visit['uri']; ?></td>
+                                <td><?php echo $visit['url']; ?></td>
                             </tr>
                             <?php } ?>
                         </tbody>
                     </table>
                 </div>
 
-                <div id="rend_eng" class="content glass">
+                <div class="content glass pure-u-1 pure-u-md-1-5">
+                    <div class="article">
+                        <h2 class="article-h2" style="text-align: center">Top 5 visited URIs</h2>
+                    </div>
+                    <?php $uri_visits = $stats->top_5_uris(); ?>
+                    <table class="pure-table pure-table-bordered" style="width: 100%">
+                        <thead>
+                            <tr>
+                                <th>URI</th>
+                                <th>Visits</th>
+                            </tr>
+                        </thead>
+
+                        <tbody>
+                            <?php foreach ($uri_visits as $visit) { ?>
+                            <tr>
+                                <td><?php echo $visit['uri']; ?></td>
+                                <td><?php echo $visit['n']; ?></td>
+                            </tr>
+                            <?php } ?>
+                        </tbody>
+                    </table>
+                </div>
+
+                <div class="content glass pure-u-1 pure-u-md-1-5">
                     <div class="article">
                         <h2 class="article-h2">Web browser engines</h2>
                     </div>
 
+                    <?php $engines = $stats->render_engines(); ?>
                     <table class="pure-table pure-table-bordered" style="width: 100%">
                         <thead>
                             <tr>
@@ -129,9 +155,7 @@
                         </thead>
 
                         <tbody>
-                            <?php
-                            $engines = $stats->render_engines();
-                            foreach ($engines as $name => $num) { ?>
+                            <?php foreach ($engines as $name => $num) { ?>
                             <tr>
                                 <td><?php echo $name; ?></td>
                                 <td><?php echo $num; ?></td>
@@ -140,7 +164,34 @@
                         </tbody>
                     </table>
                 </div>
+
+                <div class="content glass pure-u-1 pure-u-md-1-5">
+                    <div class="article">
+                        <h2 class="article-h2">Web browsers</h2>
+                    </div>
+
+                    <?php $browsers = $stats->browsers(); ?>
+                    <table class="pure-table pure-table-bordered" style="width: 100%">
+                        <thead>
+                            <tr>
+                                <th>Browser</th>
+                                <th>#</th>
+                            </tr>
+                        </thead>
+
+                        <tbody>
+                            <?php foreach ($browsers as $name => $num) { ?>
+                            <tr>
+                                <td><?php echo $name; ?></td>
+                                <td><?php echo $num; ?></td>
+                            </tr>
+                            <?php } ?>
+                        </tbody>
+                    </table>
+                </div>
+
             </div>
+
         </div>
 
     <script src="assets/chartist.min.js" type="text/javascript"></script>
@@ -205,7 +256,6 @@
     </script>
 
         <?php } else { ?>
-
         <div id="main">
             <div class="header">
                 <h1>Login</h1>
@@ -237,9 +287,7 @@
                 </div>
             </form>
         </div>
-
-            <?php } ?>
-
+        <?php } ?>
     </div>
 </body>
 </html>

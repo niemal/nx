@@ -13,6 +13,47 @@ class SIMPLE
 	}
 
 
+	/**
+	 * @return
+	 *	An array of arrays with indices 'uri' and 'url'.
+	 *
+	 * The 10 most recent visited URIs with their URLs.
+	 **/
+	public function most_recent_uris()
+	{
+		return $this->db
+				->query("SELECT uri, url FROM simple ORDER BY ts DESC LIMIT 10;")
+				->fetch_all(MYSQLI_ASSOC);
+	}
+
+
+	/**
+	 * @return
+	 *	An array of arrays with indices 'uri' and 'n'.
+	 *
+	 * All most visited URIs with their visits-number.
+	 **/
+	public function top_5_uris()
+	{
+		return $this->db
+				->query("SELECT uri, sum(visits) AS n FROM simple GROUP BY uri ORDER BY n DESC;")
+				->fetch_all(MYSQLI_ASSOC);
+	}
+
+
+	/**
+	 * @return
+	 *	An array of arrays with indices 'uri' and 'n'.
+	 *
+	 * All most visited URIs with their visits-number.
+	 **/
+	public function most_visited_uris()
+	{
+		return $this->db
+				->query("SELECT uri, sum(visits) AS n FROM simple GROUP BY uri ORDER BY n DESC;")
+				->fetch_all(MYSQLI_ASSOC);
+	}
+
 
 	/**
 	 * @return
@@ -164,58 +205,58 @@ class SIMPLE
 
 	/**
 	 * @return
-	 *	type: Array(2, 5)
-	 *		indices: 'ref', n'
+	 *	An array of arrays with indices 'ref' and 'n'.
 	 *
-	 *	context: Top 5 referers overall.
+	 *	Top 5 referers (most frequent) overall.
 	 **/
 	public function top_5_refs()
 	{
-		$res = $this->db->query("SELECT ref, count(*) as n FROM simple GROUP BY ref LIMIT 5;");
-		return $res->fetch_all(MYSQLI_ASSOC);
+		return $this->db
+				->query("SELECT ref, count(ref) AS n FROM simple GROUP BY ref ORDER BY n DESC LIMIT 5;")
+				->fetch_all(MYSQLI_ASSOC);
 	}
 
 
 	/**
 	 * @return
-	 *	type: Array(2, N)
-	 *		indices: 'ref', 'n'
+	 *	An array of arrays with indices 'ref' and 'n'.
 	 *
-	 *	context: All referers.
+	 *	All referers.
 	 **/
 	public function all_refs()
 	{
-		$res = $this->db->query("SELECT ref, count(*) as n FROM simple GROUP BY ref;");
-		return $res->fetch_all(MYSQLI_ASSOC);
+		return $this->db
+				->query("SELECT ref, count(ref) as n FROM simple GROUP BY ref ORDER BY n DESC;")
+				->fetch_all(MYSQLI_ASSOC);
 	}
 
 
 	/**
 	 * @return
-	 *	type: Array(2, 5)
-	 *		indices: 'ua', 'n'
+	 *	An array of arrays with indices 'ua' and 'n'.
 	 *
-	 *	context: All most used user-agents overall.
+	 *	Top 5 most-used user agents.
 	 **/
 	public function top_5_uas()
 	{
-		$res = $this->db->query("SELECT ua, count(*) as n FROM simple GROUP BY ua LIMIT 5;");
-		return $res->fetch_all(MYSQLI_ASSOC);
+		return $this->db
+				->query("SELECT ua, count(ua) as n FROM simple GROUP BY ua ORDER BY n DESC LIMIT 5;")
+				->fetch_all(MYSQLI_ASSOC);
 	}
 
 
 
 	/**
 	 * @return
-	 *	type: Array(2, 5)
-	 *		indices: 'ua', 'n'
+	 *	An array of arrays with indices 'ua' and 'n'.
 	 *
-	 *	context: Top 5 most used user-agents overall.
+	 *	All user agents.
 	 **/
 	public function all_uas()
 	{
-		$res = $this->db->query("SELECT ua, count(*) as n FROM simple GROUP BY ua;");
-		return $res->fetch_all(MYSQLI_ASSOC);
+		return $this->db
+				->query("SELECT ua, count(ua) as n FROM simple GROUP BY ua ORDER BY n DESC;")
+				->fetch_all(MYSQLI_ASSOC);
 	}
 
 
@@ -225,14 +266,14 @@ class SIMPLE
 	 *		indices: 'top_5', 'all'
 	 *			-> $url => $visits
 	 *
-	 *	context: Most visited URLs.
 	 *
 	 * NOTE: Might need a little MySQL optimization over here.
 	 **/
 	public function mixed_urls()
 	{
-		$res = $this->db->query("SELECT url, visits FROM simple;");
-		$res = $res->fetch_all(MYSQLI_ASSOC);
+		$res = $this->db
+				->query("SELECT url, visits FROM simple;")
+				->fetch_all(MYSQLI_ASSOC);
 
 		$all = [];
 		$top_5 = [];

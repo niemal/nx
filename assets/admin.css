@@ -106,12 +106,11 @@ The content `<div>` is where all your content goes.
 .button-xlarge {
 	font-size: 125%;
 }
-#browsers {
-	display: inline-block;
+.space {
 	min-width: 20%;
 	margin-right: 100px;
 }
-#rend_eng {
+.inline {
 	display: inline-block;
 }
 
