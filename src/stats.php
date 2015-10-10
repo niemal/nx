@@ -22,8 +22,8 @@ class SIMPLE
 	public function most_recent_uris()
 	{
 		return $this->db
-				->query("SELECT uri, url FROM simple ORDER BY ts DESC LIMIT 10;")
-				->fetch_all(MYSQLI_ASSOC);
+			->query("SELECT uri, url FROM simple ORDER BY ts DESC LIMIT 10;")
+			->fetch_all(MYSQLI_ASSOC);
 	}
 
 
@@ -36,8 +36,8 @@ class SIMPLE
 	public function top_5_uris()
 	{
 		return $this->db
-				->query("SELECT uri, sum(visits) AS n FROM simple GROUP BY uri ORDER BY n DESC;")
-				->fetch_all(MYSQLI_ASSOC);
+			->query("SELECT uri, sum(visits) AS n FROM simple GROUP BY uri ORDER BY n DESC;")
+			->fetch_all(MYSQLI_ASSOC);
 	}
 
 
@@ -50,8 +50,8 @@ class SIMPLE
 	public function most_visited_uris()
 	{
 		return $this->db
-				->query("SELECT uri, sum(visits) AS n FROM simple GROUP BY uri ORDER BY n DESC;")
-				->fetch_all(MYSQLI_ASSOC);
+			->query("SELECT uri, sum(visits) AS n FROM simple GROUP BY uri ORDER BY n DESC;")
+			->fetch_all(MYSQLI_ASSOC);
 	}
 
 
@@ -212,8 +212,8 @@ class SIMPLE
 	public function top_5_refs()
 	{
 		return $this->db
-				->query("SELECT ref, count(ref) AS n FROM simple GROUP BY ref ORDER BY n DESC LIMIT 5;")
-				->fetch_all(MYSQLI_ASSOC);
+			->query("SELECT ref, count(ref) AS n FROM simple GROUP BY ref ORDER BY n DESC LIMIT 5;")
+			->fetch_all(MYSQLI_ASSOC);
 	}
 
 
@@ -226,8 +226,8 @@ class SIMPLE
 	public function all_refs()
 	{
 		return $this->db
-				->query("SELECT ref, count(ref) as n FROM simple GROUP BY ref ORDER BY n DESC;")
-				->fetch_all(MYSQLI_ASSOC);
+			->query("SELECT ref, count(ref) as n FROM simple GROUP BY ref ORDER BY n DESC;")
+			->fetch_all(MYSQLI_ASSOC);
 	}
 
 
@@ -240,8 +240,8 @@ class SIMPLE
 	public function top_5_uas()
 	{
 		return $this->db
-				->query("SELECT ua, count(ua) as n FROM simple GROUP BY ua ORDER BY n DESC LIMIT 5;")
-				->fetch_all(MYSQLI_ASSOC);
+			->query("SELECT ua, count(ua) as n FROM simple GROUP BY ua ORDER BY n DESC LIMIT 5;")
+			->fetch_all(MYSQLI_ASSOC);
 	}
 
 
@@ -255,8 +255,8 @@ class SIMPLE
 	public function all_uas()
 	{
 		return $this->db
-				->query("SELECT ua, count(ua) as n FROM simple GROUP BY ua ORDER BY n DESC;")
-				->fetch_all(MYSQLI_ASSOC);
+			->query("SELECT ua, count(ua) as n FROM simple GROUP BY ua ORDER BY n DESC;")
+			->fetch_all(MYSQLI_ASSOC);
 	}
 
 
@@ -272,8 +272,8 @@ class SIMPLE
 	public function mixed_urls()
 	{
 		$res = $this->db
-				->query("SELECT url, visits FROM simple;")
-				->fetch_all(MYSQLI_ASSOC);
+			->query("SELECT url, visits FROM simple;")
+			->fetch_all(MYSQLI_ASSOC);
 
 		$all = [];
 		$top_5 = [];
