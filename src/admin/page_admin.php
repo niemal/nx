@@ -140,37 +140,17 @@
                     </table>
                 </div>
 
-                <div class="content glass pure-u-1 pure-u-md-1-5">
-                    <div class="article">
-                        <h2 class="article-h2">Web browser engines</h2>
-                    </div>
+            </div>
 
-                    <?php $engines = $stats->render_engines(); ?>
-                    <table class="pure-table pure-table-bordered" style="width: 100%">
-                        <thead>
-                            <tr>
-                                <th>Engine</th>
-                                <th>#</th>
-                            </tr>
-                        </thead>
 
-                        <tbody>
-                            <?php foreach ($engines as $name => $num) { ?>
-                            <tr>
-                                <td><?php echo $name; ?></td>
-                                <td><?php echo $num; ?></td>
-                            </tr>
-                            <?php } ?>
-                        </tbody>
-                    </table>
-                </div>
+            <div class="pure-g" style="text-align: center">
 
                 <div class="content glass pure-u-1 pure-u-md-1-5">
                     <div class="article">
                         <h2 class="article-h2">Web browsers</h2>
                     </div>
 
-                    <?php $browsers = $stats->browsers(); ?>
+                    <?php $rows = $stats->browsers(); ?>
                     <table class="pure-table pure-table-bordered" style="width: 100%">
                         <thead>
                             <tr>
@@ -180,10 +160,60 @@
                         </thead>
 
                         <tbody>
-                            <?php foreach ($browsers as $name => $num) { ?>
+                            <?php foreach ($rows as $row) { ?>
                             <tr>
-                                <td><?php echo $name; ?></td>
-                                <td><?php echo $num; ?></td>
+                                <td><?php echo $row['ua']; ?></td>
+                                <td><?php echo $row['n']; ?></td>
+                            </tr>
+                            <?php } ?>
+                        </tbody>
+                    </table>
+                </div>
+
+                <div class="content glass pure-u-1 pure-u-md-1-5">
+                    <div class="article">
+                        <h2 class="article-h2">Operating systems</h2>
+                    </div>
+
+                    <?php $rows = $stats->operating_systems(); ?>
+                    <table class="pure-table pure-table-bordered" style="width: 100%">
+                        <thead>
+                            <tr>
+                                <th>OS</th>
+                                <th>#</th>
+                            </tr>
+                        </thead>
+
+                        <tbody>
+                            <?php foreach ($rows as $row) { ?>
+                            <tr>
+                                <td><?php echo $row['os']; ?></td>
+                                <td><?php echo $row['n']; ?></td>
+                            </tr>
+                            <?php } ?>
+                        </tbody>
+                    </table>
+                </div>
+
+                <div class="content glass pure-u-1 pure-u-md-1-5">
+                    <div class="article">
+                        <h2 class="article-h2">Web browser engines</h2>
+                    </div>
+
+                    <?php $rows = $stats->render_engines(); ?>
+                    <table class="pure-table pure-table-bordered" style="width: 100%">
+                        <thead>
+                            <tr>
+                                <th>Engine</th>
+                                <th>#</th>
+                            </tr>
+                        </thead>
+
+                        <tbody>
+                            <?php foreach ($rows as $row) { ?>
+                            <tr>
+                                <td><?php echo $row['eng']; ?></td>
+                                <td><?php echo $row['n']; ?></td>
                             </tr>
                             <?php } ?>
                         </tbody>
