@@ -11,7 +11,7 @@
 	$err = [
 		'error' => false,
 		'error-h2' => 'Error',
-		'error-text' => 'Invalid credential combination.'
+		'error-text' => 'Invalid username or password.'
 	];
 
 	if (!$logged) {
@@ -40,12 +40,15 @@
 		header('Location: '. dirname($_SERVER['PHP_SELF']) .'/?admin');
 	}
 
+if(!$logged) {
+	require('login.php');
+} else {
 
 ?>
 <!DOCTYPE html><html>
 <head>
 <meta charset="utf-8">
-	<title><?php if (!$logged) { ?>Login<?php } else { ?>Home<?php } ?> | NX</title>
+	<title>Home | NX</title>
 	<link rel="stylesheet" href="http://yui.yahooapis.com/pure/0.6.0/pure-min.css">
 	<link rel="stylesheet" href="http://yui.yahooapis.com/pure/0.6.0/grids-responsive-min.css">
 	<link rel="stylesheet" href="assets/chartist.min.css">
@@ -55,7 +58,6 @@
 <body>
 	<div id="layout">
 	<?php
-		if ($logged) {
 			require_once('src/stats.php');
 
 			$stats = new SIMPLE($nx->db);
@@ -245,6 +247,8 @@
 
 		</div>
 
+	</div>
+
 	<script src="assets/chartist.min.js" type="text/javascript"></script>
 	<script>
 		(function (window, document) {
@@ -305,40 +309,6 @@
 			var chart = new Chartist.Line('.ct-chart', data, options);
 		}(this, this.document));
 	</script>
-
-		<?php } else { ?>
-		<div id="main">
-			<div class="header">
-				<h1>Login</h1>
-			</div>
-
-			<form action="<?php echo htmlspecialchars($_SERVER['REQUEST_URI']); ?>" method="post" class="content glass" style="text-align: center">
-				<div class="article">
-					<?php if ($err['error'] === true) { ?>
-					<h2><?php echo $err['error-h2']; ?></h2>
-					<p><?php echo $err['error-text']; ?></p>
-					<?php } ?>
-				</div>
-
-				<div class="pure-form pure-form-aligned">
-					<fieldset>
-						<div class="pure-control-group">
-							<input required name="user" type="text" placeholder="Username">
-						</div>
-
-						<div class="pure-control-group">
-							<input required name="pass" type="password" placeholder="Password">
-						</div>
-
-						<div>
-							<p>Remember me&nbsp;&nbsp;<input type="checkbox" name="remember" value="me"></p>
-							<button class="pure-button button-xlarge" type="submit" name="submit">Login</button>
-						</div>
-					</fieldset>
-				</div>
-			</form>
-		</div>
-		<?php } ?>
-	</div>
 </body>
 </html>
+<?php } ?>
