@@ -20,8 +20,8 @@ $route = key($_GET);
 $route = preg_replace('/[^A-Za-z0-9\/]/', '', $route);
 $route = explode('/', $route);
 
-if(!defined($route[0])) $route[0] = '';
-if(!defined($route[1])) $route[1] = '';
+if(!isset($route[0])) $route[0] = '';
+if(!isset($route[1])) $route[1] = '';
 
 if (file_exists('src/config.php') === false && $route[0] !== 'install') {
 	header('Location: ' . dirname($_SERVER['PHP_SELF']) . '/?install');
