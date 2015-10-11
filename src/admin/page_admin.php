@@ -97,6 +97,7 @@
 						<h2 class="article-h2" style="text-align: center">Most recent visited URIs</h2>
 					</div>
 					<?php $recent_visits = $stats->most_recent_uris(); ?>
+					<?php if(!empty($recent_visits)) { ?>
 					<table class="pure-table pure-table-bordered" style="width: 100%">
 						<thead>
 							<tr>
@@ -114,6 +115,9 @@
 							<?php } ?>
 						</tbody>
 					</table>
+					<?php } else { ?>
+					<p>There are no visitors!</p>
+					<?php } ?>
 				</div>
 
 				<div class="content glass pure-u-1 pure-u-md-1-3">
@@ -121,6 +125,7 @@
 						<h2 class="article-h2" style="text-align: center">Top 5 visited URIs</h2>
 					</div>
 					<?php $uri_visits = $stats->top_5_uris(); ?>
+					<?php if(!empty($uri_visits)) { ?>
 					<table class="pure-table pure-table-bordered" style="width: 100%">
 						<thead>
 							<tr>
@@ -138,6 +143,9 @@
 							<?php } ?>
 						</tbody>
 					</table>
+					<?php } else { ?>
+					<p>There are no visitors!</p>
+					<?php } ?>
 				</div>
 
 			</div>
@@ -151,6 +159,7 @@
 					</div>
 
 					<?php $rows = $stats->browsers(); ?>
+					<?php if(!empty($rows)) { ?>
 					<table class="pure-table pure-table-bordered" style="width: 100%">
 						<thead>
 							<tr>
@@ -168,6 +177,9 @@
 							<?php } ?>
 						</tbody>
 					</table>
+					<?php } else { ?>
+					<p>There are no browsers to show you. :(</p>
+					<?php } ?>
 				</div>
 
 				<div class="content glass pure-u-1 pure-u-md-1-5">
@@ -176,6 +188,7 @@
 					</div>
 
 					<?php $rows = $stats->operating_systems(); ?>
+					<?php if(!empty($rows)) { ?>
 					<table class="pure-table pure-table-bordered" style="width: 100%">
 						<thead>
 							<tr>
@@ -193,6 +206,9 @@
 							<?php } ?>
 						</tbody>
 					</table>
+					<?php } else { ?>
+					<p>We don't have any Operating Systems to show you. :(</p>
+					<?php } ?>
 				</div>
 
 				<div class="content glass pure-u-1 pure-u-md-1-5">
@@ -201,6 +217,7 @@
 					</div>
 
 					<?php $rows = $stats->render_engines(); ?>
+					<?php if(!empty($rows)) { ?>
 					<table class="pure-table pure-table-bordered" style="width: 100%">
 						<thead>
 							<tr>
@@ -218,6 +235,10 @@
 							<?php } ?>
 						</tbody>
 					</table>
+					<?php } else { ?>
+					<p>We didn't find any Engines.</p>
+					<?php } ?>
+
 				</div>
 
 			</div>
