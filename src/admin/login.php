@@ -42,7 +42,7 @@ if (!defined('NX-ANALYTICS')) die('Go away.');
 						</div>
 
 						<div>
-							<p>Remember me&nbsp;&nbsp;<input type="checkbox" name="remember" value="me"></p>
+							<p><input type="checkbox" name="remember" value="me">&nbsp;Remember me</p>
 							<button class="pure-button button-xlarge" type="submit" name="submit">Login</button>
 						</div>
 					</fieldset>
