@@ -92,7 +92,7 @@
 
 			<div class="pure-g" style="text-align: center">
 
-				<div class="content glass pure-u-1 pure-u-md-1-5">
+				<div class="content glass pure-u-1 pure-u-md-1-3">
 					<div class="article">
 						<h2 class="article-h2" style="text-align: center">Most recent visited URIs</h2>
 					</div>
@@ -116,7 +116,7 @@
 					</table>
 				</div>
 
-				<div class="content glass pure-u-1 pure-u-md-1-5">
+				<div class="content glass pure-u-1 pure-u-md-1-3">
 					<div class="article">
 						<h2 class="article-h2" style="text-align: center">Top 5 visited URIs</h2>
 					</div>

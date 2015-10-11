@@ -66,80 +66,106 @@ if (isset($_POST['submit'])) {
 			$nx['error'] = true;
 			$nx['error-text'] = 'Failed to establish MySQL connection, please check your credentials.';
 		} else {
-			$db->query("CREATE DATABASE `" .$parsed_data['nx-db']. "`;");
+			$db->query("CREATE DATABASE IF NOT EXISTS `" .$parsed_data['nx-db']. "`;");
 
-			if ($db->error) {
-				$nx['error'] = true;
-				$nx['error-text'] = 'Failed to create database. You sure it doesn\'t exist already?';
-			} else {
-				$db->select_db($parsed_data['nx-db']);
-				$db->query("CREATE TABLE IF NOT EXISTS admin (
-								id INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
-								user TINYTEXT NOT NULL,
-								pass TINYTEXT NOT NULL,
-								email TINYTEXT NOT NULL,
-								regdate INT NOT NULL
-				);");
-				$db->query("CREATE TABLE IF NOT EXISTS sessions (
-				                id INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
-				                user TINYTEXT NOT NULL,
-				                fingerprint TINYTEXT NOT NULL,
-				                logged_time INT NOT NULL,
-				                logged_at_time INT NOT NULL
-				);");
+			$db->select_db($parsed_data['nx-db']);
+			$db->query("CREATE TABLE IF NOT EXISTS admin (
+					id INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+					user TINYTEXT NOT NULL,
+					pass TINYTEXT NOT NULL,
+					email TINYTEXT NOT NULL,
+					regdate INT NOT NULL
+			);");
+			$db->query("CREATE TABLE IF NOT EXISTS sessions (
+	                id INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+	                user TINYTEXT NOT NULL,
+	                fingerprint TINYTEXT NOT NULL,
+	                logged_time INT NOT NULL,
+	                logged_at_time INT NOT NULL
+			);");
 
 
-				$db->query("CREATE TABLE IF NOT EXISTS refs (
-								id INT UNSIGNED NOT NULL,
-								ref TINYTEXT DEFAULT NULL,
-								times INT NOT NULL
-				);");
-				switch ($parsed_data['nx-mode']) {
-					case 'simple':
-						$db->query("CREATE TABLE IF NOT EXISTS simple (
-										id INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
-										uri TINYTEXT NOT NULL,
-										ua TINYTEXT NOT NULL,
-										url TINYTEXT NOT NULL,
-										ref TINYTEXT NOT NULL,
-										visits INT NOT NULL,
-										date INT NOT NULL,
-										ts INT NOT NULL
-						);");
-						break;
-					case 'advanced':
-						$db->query("CREATE TABLE IF NOT EXISTS advanced (
-										id INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
-										ip TINYTEXT NOT NULL,
-										ua TINYTEXT NOT NULL,
-										xff TINYTEXT DEFAULT NULL
-						);");
-						$db->query("CREATE TABLE IF NOT EXISTS urls (
-										id INT UNSIGNED NOT NULL,
-										url TINYTEXT NOT NULL,
-										visits INT NOT NULL,
-										time INT NOT NULL
-						);");
-						break;
-				}
+			$db->query("CREATE TABLE IF NOT EXISTS refs (
+					id INT UNSIGNED NOT NULL,
+					ref TINYTEXT DEFAULT NULL,
+					visits INT NOT NULL
+			);");
+			$db->query("CREATE TABLE IF NOT EXISTS urls (
+					id INT UNSIGNED NOT NULL,
+					url TINYTEXT NOT NULL,
+					ts INT NOT NULL,
+					visits INT NOT NULL
+			);");
 
-				$user =& $parsed_data['admin-user'];
-				$pass =& $parsed_data['admin-pass'];
-				$email =& $parsed_data['admin-email'];
-				$now = time();
+			switch ($parsed_data['nx-mode']) {
+				case 'simple':
+					$db->query("CREATE TABLE IF NOT EXISTS simple (
+							id INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+							uri TINYTEXT NOT NULL,
+							ua TINYTEXT NOT NULL,
+							visits INT NOT NULL,
+							date INT NOT NULL
+					);");
+					$db->query("DROP PROCEDURE IF EXISTS nx_simple;");
+					$db->multi_query("CREATE PROCEDURE nx_simple(IN _uri TINYTEXT, IN _url TINYTEXT,
+					                                             IN _ua TINYTEXT, IN _ref TINYTEXT,
+					                                             IN _date INT, IN _ts INT)
+						MODIFIES SQL DATA
+						BEGIN
+						    SET @simple_id = (SELECT id FROM simple WHERE uri=_uri AND date=_date AND ua=_ua LIMIT 1);
+						    IF @simple_id IS NULL THEN
+						        INSERT INTO simple(ua, uri, visits, date) VALUES (_ua, _uri, 1, _date);
+						        SET @last_id = last_insert_id();
+						        INSERT INTO refs(id, ref, visits) VALUES (@last_id, _ref, 1);
+						        INSERT INTO urls(id, url, visits, ts) VALUES (@last_id, _url, 1, _ts);
+						    ELSE
+						        UPDATE simple SET visits=visits+1 WHERE id=@simple_id;
 
-				$parsed_data['salt'] = 'LyUrA4aCPhd7I717';
-				$pass = hash('sha256', $parsed_data['salt'].$pass);
+						        SET @url_id = (SELECT id FROM urls WHERE id=@simple_id AND url=_url LIMIT 1);
+						        IF @url_id IS NULL THEN
+						            INSERT INTO urls (id, url, visits, ts) VALUES (@simple_id, _url, 1, _ts);
+						        ELSE
+						            UPDATE urls SET visits=visits+1 WHERE id=@url_id;
+						        END IF;
 
-				$db->query("INSERT INTO admin (user, pass, email, regdate)
-				                 VALUES ('$user', '$pass', '$email', $now);");
+						        SET @ref_id = (SELECT id FROM refs WHERE id=@simple_id AND ref=_ref LIMIT 1);
+						        IF @ref_id IS NULL THEN
+						        	INSERT INTO refs (id, ref, visits) VALUES (@simple_id, _ref, 1);
+						        ELSE
+						            UPDATE refs SET visits=visits+1 WHERE id=@simple_id;
+						        END IF;
+						    END IF;
+						END;");
+					if ($db->error) die('Fatal error: ' . $db->errno . ' | ' . $db->error . '\n');
+					break;
+				case 'advanced':
+					$db->query("CREATE TABLE IF NOT EXISTS advanced (
+							id INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+							ip TINYTEXT NOT NULL,
+							ua TINYTEXT NOT NULL,
+							xff TINYTEXT DEFAULT NULL,
+							visits INT NOT NULL
+					);");
+					break;
+			}
 
-				unset($parsed_data['admin-user']);
-				unset($parsed_data['admin-pass']);
-				unset($parsed_data['admin-email']);
+			$user =& $parsed_data['admin-user'];
+			$pass =& $parsed_data['admin-pass'];
+			$email =& $parsed_data['admin-email'];
+			$now = time();
 
-				$json = json_encode($parsed_data, 128);
-				$output = <<<TEXT
+			$parsed_data['salt'] = 'LyUrA4aCPhd7I717';
+			$pass = hash('sha256', $parsed_data['salt'].$pass);
+
+			$db->query("INSERT INTO admin (user, pass, email, regdate)
+			                 VALUES ('$user', '$pass', '$email', $now);");
+
+			unset($parsed_data['admin-user']);
+			unset($parsed_data['admin-pass']);
+			unset($parsed_data['admin-email']);
+
+			$json = json_encode($parsed_data, 128);
+			$output = <<<TEXT
 <?php
 if (!defined('NX-ANALYTICS')) die('Go away.');
 
@@ -149,9 +175,8 @@ JSON;
 
 TEXT;
 
-				file_put_contents(dirname(__FILE__) . '/config.php', $output);
-				$nx['success'] = true;
-			}
+			file_put_contents(dirname(__FILE__) . '/config.php', $output);
+			$nx['success'] = true;
 		}
 	}
 }

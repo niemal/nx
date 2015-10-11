@@ -22,7 +22,7 @@ clASs SIMPLE
 	public function most_recent_uris()
 	{
 		return $this->db
-			->query("SELECT uri, url FROM simple ORDER BY ts DESC LIMIT 10;")
+			->query("SELECT simple.uri, urls.url FROM simple INNER JOIN urls ON simple.id = urls.id ORDER BY urls.ts DESC LIMIT 10;")
 			->fetch_all(MYSQLI_ASSOC);
 	}
 
