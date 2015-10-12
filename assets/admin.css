@@ -129,6 +129,20 @@ The content `<div>` is where all your content goes.
 .ct-label {
 	color: #CCC;
 }
+.tooltip {
+	position: absolute;
+	display: block;
+	width: 40px;
+	height: 30px;
+	color: #fff;
+	background: #000;
+	text-align: center;
+	border-radius: 6px;
+	border-top: 8px solid #000;
+	border-right: 8px solid transparent;
+	border-left: 8px solid transparent;
+	zindex: 1337;
+}
 
 /*
 The `#menu` `<div>` is the parent `<div>` that contains the `.pure-menu` that

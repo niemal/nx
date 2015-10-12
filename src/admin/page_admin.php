@@ -14,35 +14,35 @@
 		'error-text' => 'Invalid username or password.'
 	];
 
-	if (!$logged) {
-		if (isset($_POST['submit'])) {
-			if (!isset($_POST['user']) || !isset($_POST['pass'])) {
-				$err['error'] = true;
-				$err['error-text'] = 'You forgot something.';
-			} else if ( (strlen($_POST['user']) < 4 || strlen($_POST['user']) > 32) ||
-						(strlen($_POST['pass']) < 4 || strlen($_POST['pass']) > 32) ) {
-				$err['error'] = true;
-				$err['error-text'] = 'Both username and password lengths must not be less than 4 and not higher than 32.';
-			} else {
-				if (isset($_POST['remember'])) $logged_time = 9999999999;
-				else                           $logged_time = 600;
+	if (!$logged && isset($_POST['submit'])) {
+		if (!isset($_POST['user']) || !isset($_POST['pass'])) {
+			$err['error'] = true;
+			$err['error-text'] = 'You forgot something.';
+		} else if ( (strlen($_POST['user']) < 4 || strlen($_POST['user']) > 32) ||
+					(strlen($_POST['pass']) < 4 || strlen($_POST['pass']) > 32) ) {
+			$err['error'] = true;
+			$err['error-text'] = 'Both username and password lengths must not be less than 4 and not higher than 32.';
+		} else {
+			if (isset($_POST['remember'])) $logged_time = 9999999999;
+			else                           $logged_time = 600;
 
-				$err['error'] = !try_to_login($nx, $_POST['user'], $_POST['pass'], $logged_time);
-				if (!$err['error']) {
-					$user = $_POST['user'];
-					$logged = true;
-				}
+			$err['error'] = !try_to_login($nx, $_POST['user'], $_POST['pass'], $logged_time);
+			if (!$err['error']) {
+				$user = $_POST['user'];
+				$logged = true;
 			}
 		}
+	}
+
+	if(!$logged) {
+		require('login.php');
+	} else if ($route[1] === 'settings') {
+		require('settings.php');
 	} else if ($route[1] === 'logout') {
 		logout($nx, $user);
 		header('HTTP/1.1 302 Moved Temporarily');
 		header('Location: '. dirname($_SERVER['PHP_SELF']) .'/?admin');
-	}
-
-if(!$logged) {
-	require('login.php');
-} else {
+	} else {
 
 ?>
 <!DOCTYPE html><html>
@@ -69,8 +69,8 @@ if(!$logged) {
 				<a class="pure-menu-heading dark-glass" href="#">nx analytics</a>
 
 				<ul class="pure-menu-list">
-					<li class="pure-menu-item"><a href="#" class="pure-menu-link">Dashboard</a></li>
-					<li class="pure-menu-item"><a href="#" class="pure-menu-link">Settings</a></li>
+					<li class="pure-menu-item"><a href="?admin/" class="pure-menu-link">Dashboard</a></li>
+					<li class="pure-menu-item"><a href="?admin/settings" class="pure-menu-link">Settings</a></li>
 					<li class="pure-menu-item"><a href="?admin/logout" class="pure-menu-link">Logout</a></li>
 				</ul>
 			</div>

@@ -3,7 +3,7 @@
  * Every array returned is supposed to be ASsociative and sorted, high-to-low.
  **/
 
-clASs SIMPLE
+class SIMPLE
 {
 	public $db;
 
@@ -61,7 +61,7 @@ clASs SIMPLE
 	 *
 	 * LASt week's visits.
 	 **/
-	public function lASt_weeks_visits()
+	public function last_weeks_visits()
 	{
 		$out = [];
 		$out['labels'] = '[';
@@ -75,7 +75,7 @@ clASs SIMPLE
 		foreach ($dates as $date) {
 			$res = $this->db
 				->query("SELECT sum(visits) AS visits FROM simple WHERE date='$date';")
-				->fetch_ASsoc();
+				->fetch_assoc();
 			
 			$out_date = implode('/', str_split(substr($date, -4), 2));
 
@@ -241,7 +241,7 @@ clASs SIMPLE
 		$all = [];
 		$top_5 = [];
 
-		foreach ($res AS $item) {
+		foreach ($res as $item) {
 			if (!array_key_exists($item['url'], $all))
 				$all[$item['url']] = intval($item['visits']);
 			else
@@ -251,7 +251,7 @@ clASs SIMPLE
 		arsort($all);
 
 		$counter = 0;
-		foreach ($all AS $url => $visits) {
+		foreach ($all as $url => $visits) {
 			$top_5[$url] = $visits;
 			$counter++;
 			if ($counter === 5) break;

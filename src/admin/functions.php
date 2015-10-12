@@ -84,3 +84,29 @@
 		setcookie('session', '', -1, '/');
 		$nx->db->query("DELETE FROM sessions WHERE user='$user';");
 	}
+
+
+	/**
+	 * @param
+	 *	NX class object, username, current passowrd, new password.
+	 *
+	 * @return
+	 *	False if the current password is not valid, true for success.
+	 **/
+	function change_pass($nx, $user, $current, $new)
+	{
+		$current = hash('sha256', $nx->config['salt'].$current);
+
+		$res = $nx->db->query("SELECT id FROM admin WHERE user='$user' AND pass='$current';");
+		if ($res->num_rows === 0)
+			return false;
+		else {
+			$res = $res->fetch_assoc();
+			$id =& $res['id'];
+
+			$new = hash('sha256', $nx->config['salt'].$new);
+			$nx->db->query("UPDATE admin SET pass='$new' WHERE id='$id';");
+
+			return true;
+		}
+	}

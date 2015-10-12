@@ -215,7 +215,7 @@ TEXT;
 				</div>
 			</div>
 			<?php } else { ?>
-			<form action="<?php echo $_SERVER['REQUEST_URI']; ?>" method="post" class="content glass">
+			<form action="?install" method="post" class="content glass">
 				<div class="article">
 					<?php if ($nx['error'] === true) { ?>
 					<h2><?php echo $nx['error-h2']; ?></h2>
