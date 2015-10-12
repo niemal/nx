@@ -258,6 +258,17 @@
 	</div>
 
 	<script src="assets/tooltip.min.js"></script>
+	<script>
+		var datatooltip = document.querySelectorAll('[data-tooltip]');
+		for(var j=0; j<datatooltip.length; j++){
+			datatooltip[j].onmouseover = function(e){
+				tooltip.show(this.getAttribute('data-tooltip'));
+			};
+			datatooltip[j].onmouseout = function(e){
+				tooltip.hide();
+			}
+		}
+	</script>
 	<script src="assets/chartist.min.js"></script>
 	<script>
 		(function (window, document) {

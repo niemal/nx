@@ -304,3 +304,17 @@ small screens.
 		display: block;
 	}
 }
+
+
+#tt {
+	position: absolute;
+	display: block;
+}
+
+#ttcont {
+	display: block;
+	padding: 4px 10px;
+	margin-left: 8px;
+	background: #444;
+	color: #fff;
+}
