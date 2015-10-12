@@ -113,7 +113,13 @@
 							<?php foreach ($recent_visits as $visit) { ?>
 							<tr>
 								<td><?php echo $visit['uri']; ?></td>
-								<td><?php echo $visit['url']; ?></td>
+								<?php
+									if(strlen($visit['url']) > 70){
+										echo '<td data-tooltip="' . htmlspecialchars($visit['url']) . '">' . substr($visit['url'], 0, 60) . '. . .</td>';
+									} else {
+										echo '<td>'.$visit['url'].'</td>';
+									}
+								?>
 								<td><?php echo $visit['time']; ?></td>
 							</tr>
 							<?php } ?>
@@ -251,7 +257,8 @@
 
 	</div>
 
-	<script src="assets/chartist.min.js" type="text/javascript"></script>
+	<script src="assets/tooltip.min.js"></script>
+	<script src="assets/chartist.min.js"></script>
 	<script>
 		(function (window, document) {
 
