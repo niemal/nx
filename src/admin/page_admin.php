@@ -24,7 +24,7 @@
 			$err['error-text'] = 'Both username and password lengths must not be less than 4 and not higher than 32.';
 		} else {
 			if (isset($_POST['remember'])) $logged_time = 9999999999;
-			else                           $logged_time = 600;
+			else                           $logged_time = 7200;
 
 			$err['error'] = !try_to_login($nx, $_POST['user'], $_POST['pass'], $logged_time);
 			if (!$err['error']) {
