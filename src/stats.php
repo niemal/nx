@@ -147,8 +147,7 @@ class SIMPLE
 			->query("SELECT 'Unknown' AS 'os', count(*) AS n FROM simple WHERE ua NOT LIKE '%windows%' AND ua NOT LIKE '%winnt%'
 				AND ua NOT LIKE '%linux%' AND ua NOT LIKE '%open bsd%' AND ua NOT LIKE '%mac os%' AND ua NOT LIKE '%search bot%'
 				AND ua NOT LIKE '%iphone%' AND ua NOT LIKE '%ipod%' AND ua NOT LIKE '%ipad%' AND ua NOT LIKE '%android%' AND ua NOT LIKE '%bot%'
-				AND ua NOT LIKE '%crawler%' AND ua NOT LIKE '%spider%'
-				AND ua NOT LIKE '%http%' HAVING n <> 0
+				AND ua NOT LIKE '%crawler%' AND ua NOT LIKE '%spider%' AND ua NOT LIKE '%http%' HAVING n <> 0
 				UNION SELECT 'Windows' AS 'os', count(*) AS n FROM simple WHERE ua LIKE '%windows%' OR ua LIKE '%winnt%'
 				AND ua NOT LIKE '%bot%' AND ua NOT LIKE '%spider%' AND ua NOT LIKE '%crawler%' AND ua NOT LIKE '%http%' HAVING n <> 0
 				UNION SELECT 'Linux' AS 'os', count(*) AS n FROM simple WHERE ua LIKE '%linux%' OR ua LIKE '%open bsd%'
