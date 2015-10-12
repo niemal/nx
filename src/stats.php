@@ -155,7 +155,7 @@ class SIMPLE
 				AND ua NOT LIKE '%android%' HAVING n <> 0
 				UNION SELECT 'Macintosh' AS 'os', count(*) AS n FROM simple WHERE ua LIKE '%mac os%' AND ua NOT LIKE '%iphone%'
 				AND ua NOT LIKE '%ipod%' AND ua NOT LIKE '%ipad%' HAVING n <> 0
-				UNION SELECT 'Bots' AS 'os', count(*) AS n FROM simple WHERE ua LIKE '%slurp%' OR ua LIKE '%bot%' OR ua LIKE '%spider%'
+				UNION SELECT 'Bots' AS 'os', count(*) AS n FROM simple WHERE ua LIKE '%bot%' OR ua LIKE '%spider%'
 				OR ua LIKE '%crawler%' OR ua LIKE '%http%' HAVING n <> 0
 				UNION SELECT 'iOS' AS 'os', count(*) AS n FROM simple WHERE ua LIKE '%iphone%' OR ua LIKE '%ipod%' OR ua LIKE '%ipad%' HAVING n <> 0
 				UNION SELECT 'Android' AS 'os', count(*) AS n FROM simple WHERE ua LIKE '%android%' HAVING n <> 0
@@ -175,8 +175,8 @@ class SIMPLE
 		return $this->db
 			->query("SELECT 'Unknown' AS 'ua', count(*) AS n FROM simple WHERE ua NOT LIKE '%firefox/%' AND ua NOT LIKE '%seamonkey/%'
 				AND ua NOT LIKE '%chrome/%' AND ua NOT LIKE '%chromium/%' AND ua NOT LIKE '%safari/%' AND ua NOT LIKE '%opr/%'
-				AND ua NOT LIKE '%opera/%' AND ua NOT LIKE '%msie%' AND ua NOT LIKE '%trident/%' AND ua NOT LIKE '%slurp%'
-				AND ua NOT LIKE '%bot%' AND ua NOT LIKE '%crawler%' AND ua NOT LIKE '%spider%' AND ua NOT LIKE '%http%' HAVING n <> 0
+				AND ua NOT LIKE '%opera/%' AND ua NOT LIKE '%msie%' AND ua NOT LIKE '%trident/%' AND ua NOT LIKE '%bot%'
+				AND ua NOT LIKE '%crawler%' AND ua NOT LIKE '%spider%' AND ua NOT LIKE '%http%' HAVING n <> 0
 				UNION SELECT 'Firefox' AS 'ua', count(*) AS n FROM simple WHERE ua LIKE '%firefox/%' AND ua NOT LIKE '%seamonkey/%' HAVING n <> 0
 				UNION SELECT 'Seamonkey' AS 'ua', count(*) AS n FROM simple WHERE ua LIKE '%seamonkey/%' HAVING n <> 0
 				UNION SELECT 'Chrome' AS 'ua', count(*) AS n FROM simple WHERE ua LIKE '%chrome/%' AND ua NOT LIKE '%chromium/%' HAVING n <> 0
