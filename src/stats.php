@@ -146,13 +146,16 @@ class SIMPLE
 		return $this->db
 			->query("SELECT 'Unknown' AS 'os', count(*) AS n FROM simple WHERE ua NOT LIKE '%windows%' AND ua NOT LIKE '%winnt%'
 				AND ua NOT LIKE '%linux%' AND ua NOT LIKE '%open bsd%' AND ua NOT LIKE '%mac os%' AND ua NOT LIKE '%search bot%'
-				AND ua NOT LIKE '%iphone%' AND ua NOT LIKE '%ipod%' AND ua NOT LIKE '%ipad%' AND ua NOT LIKE '%android%' HAVING n <> 0
-				UNION SELECT 'Windows' AS 'os', count(*) AS n FROM simple WHERE ua LIKE '%windows%' OR ua LIKE '%winnt%' HAVING n <> 0
+				AND ua NOT LIKE '%iphone%' AND ua NOT LIKE '%ipod%' AND ua NOT LIKE '%ipad%' AND ua NOT LIKE '%android%' 
+				AND ua NOT LIKE '%slurp%' AND ua NOT LIKE '%bot%' AND ua NOT LIKE '%crawler%' AND ua NOT LIKE '%spider%' HAVING n <> 0
+				UNION SELECT 'Windows' AS 'os', count(*) AS n FROM simple WHERE ua LIKE '%windows%' OR ua LIKE '%winnt%'
+				AND ua NOT LIKE '%bot%' AND ua NOT LIKE '%spider%' AND ua NOT LIKE '%crawler%' HAVING n <> 0
 				UNION SELECT 'Linux' AS 'os', count(*) AS n FROM simple WHERE ua LIKE '%linux%' OR ua LIKE '%open bsd%'
 				AND ua NOT LIKE '%android%' HAVING n <> 0
 				UNION SELECT 'Macintosh' AS 'os', count(*) AS n FROM simple WHERE ua LIKE '%mac os%' AND ua NOT LIKE '%iphone%'
 				AND ua NOT LIKE '%ipod%' AND ua NOT LIKE '%ipad%' HAVING n <> 0
-				UNION SELECT 'Bot' AS 'os', count(*) AS n FROM simple WHERE ua LIKE '%search bot%' HAVING n <> 0
+				UNION SELECT 'Bots' AS 'os', count(*) AS n FROM simple WHERE ua LIKE '%slurp%' OR ua LIKE '%bot%' OR ua LIKE '%spider%'
+				OR ua LIKE '%crawler%' HAVING n <> 0
 				UNION SELECT 'iOS' AS 'os', count(*) AS n FROM simple WHERE ua LIKE '%iphone%' OR ua LIKE '%ipod%' OR ua LIKE '%ipad%' HAVING n <> 0
 				UNION SELECT 'Android' AS 'os', count(*) AS n FROM simple WHERE ua LIKE '%android%' HAVING n <> 0
 				ORDER BY n DESC;")
@@ -171,7 +174,8 @@ class SIMPLE
 		return $this->db
 			->query("SELECT 'Unknown' AS 'ua', count(*) AS n FROM simple WHERE ua NOT LIKE '%firefox/%' AND ua NOT LIKE '%seamonkey/%'
 				AND ua NOT LIKE '%chrome/%' AND ua NOT LIKE '%chromium/%' AND ua NOT LIKE '%safari/%' AND ua NOT LIKE '%opr/%'
-				AND ua NOT LIKE '%opera/%' AND ua NOT LIKE '%;msie %' AND ua NOT LIKE '%trident/%' HAVING n <> 0
+				AND ua NOT LIKE '%opera/%' AND ua NOT LIKE '%;msie %' AND ua NOT LIKE '%trident/%' AND ua NOT LIKE '%slurp%'
+				AND ua NOT LIKE '%bot%' AND ua NOT LIKE '%crawler%' AND ua NOT LIKE '%spider%' HAVING n <> 0
 				UNION SELECT 'Firefox' AS 'ua', count(*) AS n FROM simple WHERE ua LIKE '%firefox/%' AND ua NOT LIKE '%seamonkey/%' HAVING n <> 0
 				UNION SELECT 'Seamonkey' AS 'ua', count(*) AS n FROM simple WHERE ua LIKE '%seamonkey/%' HAVING n <> 0
 				UNION SELECT 'Chrome' AS 'ua', count(*) AS n FROM simple WHERE ua LIKE '%chrome/%' AND ua NOT LIKE '%chromium/%' HAVING n <> 0
@@ -179,7 +183,10 @@ class SIMPLE
 				UNION SELECT 'Safari' AS 'ua', count(*) AS n FROM simple WHERE ua LIKE '%safari/%' AND ua NOT LIKE '%chrome/%'
 				AND ua NOT LIKE '%chromium/%' HAVING n <> 0
 				UNION SELECT 'Opera' AS 'ua', count(*) AS n FROM simple WHERE ua LIKE '%opr/%' OR ua LIKE '%opera/%' HAVING n <> 0
-				UNION SELECT 'IE' AS 'ua', count(*) AS n FROM simple WHERE ua LIKE '%;msie %' OR ua LIKE '%trident/%' HAVING n <> 0
+				UNION SELECT 'Bots' AS 'os', count(*) AS n FROM simple WHERE ua LIKE '%slurp%' OR ua LIKE '%bot%' OR ua LIKE '%spider%'
+				OR ua LIKE '%crawler%' HAVING n <> 0
+				UNION SELECT 'IE' AS 'ua', count(*) AS n FROM simple WHERE ua LIKE '%msie%' OR ua LIKE '%trident/%'
+				AND ua NOT LIKE '%spider%' AND ua NOT LIKE '%bot%' AND ua NOT LIKE '%crawler%' HAVING n <> 0
 				ORDER BY n DESC;")
 			->fetch_all(MYSQLI_ASSOC);
 	}
@@ -195,7 +202,8 @@ class SIMPLE
 	{
 		return $this->db
 			->query("SELECT 'Unknown' AS 'eng', count(*) AS n FROM simple WHERE ua NOT LIKE '%gecko/%' AND ua NOT LIKE '%applewebkit/%'
-				AND ua NOT LIKE '%opera/%' AND ua NOT LIKE '%trident/%' AND ua NOT LIKE '%chrome/%' HAVING n <> 0
+				AND ua NOT LIKE '%opera/%' AND ua NOT LIKE '%trident/%' AND ua NOT LIKE '%chrome/%' AND ua NOT LIKE '%slurp%'
+				AND ua NOT LIKE '%bot%' AND ua NOT LIKE '%crawler%' AND ua NOT LIKE '%spider%' HAVING n <> 0
 				UNION SELECT 'Gecko' AS 'eng', count(*) AS n FROM simple WHERE ua LIKE '%gecko/%' HAVING n <> 0
 				UNION SELECT 'Webkit' AS 'eng', count(*) AS n FROM simple WHERE ua LIKE '%applewebkit/%' HAVING n <> 0
 				UNION SELECT 'Presto' AS 'eng', count(*) AS n FROM simple WHERE ua LIKE '%opera/%' HAVING n <> 0
