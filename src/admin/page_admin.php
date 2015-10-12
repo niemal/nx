@@ -114,8 +114,8 @@
 							<tr>
 								<td><?php echo $visit['uri']; ?></td>
 								<?php
-									if(strlen($visit['url']) > 70){
-										echo '<td data-tooltip="' . htmlspecialchars($visit['url']) . '">' . substr($visit['url'], 0, 60) . '. . .</td>';
+									if(strlen($visit['url']) > 51){
+										echo '<td data-tooltip="' . htmlspecialchars($visit['url']) . '">' . substr($visit['url'], 0, 50) . '. . .</td>';
 									} else {
 										echo '<td>'.$visit['url'].'</td>';
 									}
