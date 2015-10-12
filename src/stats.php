@@ -14,6 +14,39 @@ class SIMPLE
 
 
 	/**
+	 * @param
+	 *	UNIX epoch timestamp.
+	 *
+	 * @return
+	 *	A string represeting how long ago was the timestamp.
+	 **/
+	private function how_long_ago($ts)
+	{
+		$diff = time() - $ts;
+		if ($diff > 5183999)
+			return intval($diff/2592000) . ' months ago';
+		else if ($diff > 2591999)
+			return '1 month ago';
+		else if ($diff > 172799)
+			return intval($diff/86400) . ' days ago';
+		else if ($diff > 86399)
+			return '1 day ago';
+		else if ($diff > 7199)
+			return intval($diff/3600) . ' hours ago';
+		else if ($diff > 3599)
+			return '1 hour ago';
+		else if ($diff > 119)
+			return intval($diff/60) . ' minutes ago';
+		else if ($diff > 59)
+			return '1 minute ago';
+		else if ($diff > 1)
+			return $diff . ' seconds ago';
+		else
+			return 'Just now';
+	}
+
+
+	/**
 	 * @return
 	 *	An array of arrays with indices 'uri' and 'url'.
 	 *
@@ -21,9 +54,16 @@ class SIMPLE
 	 **/
 	public function most_recent_uris()
 	{
-		return $this->db
-			->query("SELECT simple.uri, urls.url FROM simple INNER JOIN urls ON simple.id = urls.id ORDER BY urls.ts DESC LIMIT 10;")
+		$rows = $this->db
+			->query("SELECT simple.uri, urls.url, urls.ts FROM simple INNER JOIN urls ON simple.id = urls.id ORDER BY urls.ts DESC LIMIT 10;")
 			->fetch_all(MYSQLI_ASSOC);
+
+		foreach ($rows as &$row) {
+			$row['time'] = $this->how_long_ago($row['ts']);
+			unset($row['ts']);
+		}
+
+		return $rows;
 	}
 
 

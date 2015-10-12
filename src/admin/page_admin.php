@@ -105,6 +105,7 @@
 							<tr>
 								<th>URI</th>
 								<th>URL</th>
+								<th>Time</th>
 							</tr>
 						</thead>
 
@@ -113,6 +114,7 @@
 							<tr>
 								<td><?php echo $visit['uri']; ?></td>
 								<td><?php echo $visit['url']; ?></td>
+								<td><?php echo $visit['time']; ?></td>
 							</tr>
 							<?php } ?>
 						</tbody>
