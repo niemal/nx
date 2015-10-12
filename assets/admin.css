@@ -317,4 +317,5 @@ small screens.
 	margin-left: 8px;
 	background: #444;
 	color: #fff;
+	word-wrap: break-word;
 }
