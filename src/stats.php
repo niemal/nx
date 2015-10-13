@@ -76,7 +76,7 @@ class SIMPLE
 	public function top_5_uris()
 	{
 		return $this->db
-			->query("SELECT uri, sum(visits) AS n FROM simple GROUP BY uri ORDER BY n DESC;")
+			->query("SELECT uri, sum(visits) AS n FROM simple GROUP BY uri ORDER BY n DESC LIMIT 5;")
 			->fetch_all(MYSQLI_ASSOC);
 	}
 

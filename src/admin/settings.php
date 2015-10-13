@@ -50,6 +50,7 @@
 
 				<ul class="pure-menu-list">
 					<li class="pure-menu-item"><a href="?admin/" class="pure-menu-link">Dashboard</a></li>
+					<li class="pure-menu-item"><a href="?admin/statistics" class="pure-menu-link">Statistics</a></li>
 					<li class="pure-menu-item"><a href="?admin/settings" class="pure-menu-link">Settings</a></li>
 					<li class="pure-menu-item"><a href="?admin/logout" class="pure-menu-link">Logout</a></li>
 				</ul>
