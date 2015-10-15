@@ -1,5 +1,5 @@
-nx analytics
-============
+nx analytics [(img)](http://i.imgur.com/DVwlBsJ.png)
+=============================================
 
 ### This project is in its really early phase, a lot of things will/might change.
 
