@@ -1,7 +1,11 @@
+/*
+ * STYLE FOR GENERAL PAGE
+ */
+
 body {
 	background-image: url('background.png');
 	background-size: cover;
-    color: #eee;
+	color: #eee;
 }
 
 a {
@@ -17,50 +21,27 @@ a {
 	background-color: rgba(0, 0, 0, 0.2);
 }
 
-
 .pure-img-responsive {
 	max-width: 100%;
 	height: auto;
 }
-
-#layout, #menu, .menu-link {
-	-webkit-transition: all 0.2s ease-out;
-	-moz-transition: all 0.2s ease-out;
-	-ms-transition: all 0.2s ease-out;
-	-o-transition: all 0.2s ease-out;
-	transition: all 0.2s ease-out;
-}
-
-/*
-This is the parent `<div>` that contains the menu and the content area.
-*/
-#layout {
-	position: relative;
-	padding-left: 0;
-}
-	#layout.active #menu {
-		left: 150px;
-		width: 150px;
-	}
-
-	#layout.active .menu-link {
-		left: 150px;
-	}
 /*
 The content `<div>` is where all your content goes.
 */
 .content {
 	margin: 0 auto;
+	max-width: 960px;
+}
+.content-inner {
 	padding: 2em;
-	max-width: 800px;
-	margin-bottom: 50px;
+	margin: 2em;
 	line-height: 1.6em;
 }
 .header {
 	margin: 0;
 	color: #eee;
 	text-align: center;
-	padding: 2.5em 2em;
+	padding: 2em;
 }
 	.header h1 {
 		margin: 0.2em 0;
@@ -78,7 +59,7 @@ The content `<div>` is where all your content goes.
 	margin: 0 0 2em;
 }
 
-.article-h2 {
+.article h2 {
 	margin: 0;
 	font-weight: 300;
 }
@@ -103,9 +84,6 @@ The content `<div>` is where all your content goes.
 }
 
 /* nl was here below */
-.button-xlarge {
-	font-size: 125%;
-}
 .space {
 	min-width: 20%;
 	margin-right: 100px;
@@ -144,18 +122,38 @@ The content `<div>` is where all your content goes.
 	zindex: 1337;
 }
 
-/* statistics.php */
-.sections {
-	margin-top: 10px;
-	margin-left: 30px;
-	display: none;
-}
+
+
 
 /*
-The `#menu` `<div>` is the parent `<div>` that contains the `.pure-menu` that
-appears on the left side of the page.
-*/
+ * RESPONSIVE MENU
+ */
 
+/* set some basic animations */
+#layout, #menu, .menu-link {
+	-webkit-transition: all 0.2s ease-out;
+	-moz-transition: all 0.2s ease-out;
+	-ms-transition: all 0.2s ease-out;
+	-o-transition: all 0.2s ease-out;
+	transition: all 0.2s ease-out;
+}
+
+
+/* `#layout` contains the whole page */
+#layout {
+	position: relative;
+	padding-left: 0;
+}
+	#layout.active #menu {
+		left: 150px;
+		width: 150px;
+	}
+	#layout.active .menu-link {
+		left: 150px;
+	}
+
+
+/* `#menu` is the container of the links and headings */
 #menu {
 	margin-left: -150px; /* "#menu" width */
 	width: 150px;
@@ -167,71 +165,41 @@ appears on the left side of the page.
 	overflow-y: auto;
 	-webkit-overflow-scrolling: touch;
 }
-	/*
-	All anchors inside the menu should be styled like this.
-	*/
 	#menu a {
 		color: #999;
 		border: none;
 		padding: 0.6em 0 0.6em 0.6em;
 	}
 
-	/*
-	Remove all background/borders, since we are applying them to #menu.
-	*/
 	 #menu .pure-menu,
 	 #menu .pure-menu ul {
 		border: none;
 		background: transparent;
 	}
 
-	/*
-	Add that light border to separate items into groups.
-	*/
 	#menu .pure-menu .menu-item-divided {
 		border-top: 1px solid #333;
 	}
-		/*
-		Change color of the anchor links on hover/focus.
-		*/
 		#menu .pure-menu li a:hover,
 		#menu .pure-menu li a:focus {
 			background: #333;
 		}
 
-	/*
-	This styles the selected menu item `<li>`.
-	*/
 	#menu .pure-menu-selected {
 		background: #1f8dd6;
 	}
-		/*
-		This styles a link within a selected menu item `<li>`.
-		*/
 		#menu .pure-menu-selected a {
 			color: #fff;
 		}
 
-	/*
-	This styles the menu heading.
-	*/
-	#menu .pure-menu-heading {
+	#menu .pure-menu-heading{
 		font-size: 110%;
 		color: #fff;
-		margin: 0;
+		padding: .66em;
 	}
 
-/* -- Dynamic Button For Responsive Menu -------------------------------------*/
 
-/*
-The button to open/close the Menu is custom-made and not part of Pure. Here's
-how it works:
-*/
-
-/*
-`.menu-link` represents the responsive menu toggle that shows/hides on
-small screens.
-*/
+/* `.menu-link` is the little button that shows up in small screens */
 .menu-link {
 	position: fixed;
 	display: block;
@@ -272,7 +240,6 @@ small screens.
 		}
 
 
-
 /* hides the menu at 48em */
 @media (min-width: 48em) {
 
@@ -300,29 +267,4 @@ small screens.
 		position: relative;
 		left: 150px;
 	}
-
-	/* nl css-bomb */
-	#browsers {
-		margin-right: 0;
-		min-width: 0;
-		display: block;
-	}
-	#rend_eng {
-		display: block;
-	}
-}
-
-
-#tt {
-	position: absolute;
-	display: block;
-}
-
-#ttcont {
-	display: block;
-	padding: 4px 10px;
-	margin-left: 8px;
-	background: #444;
-	color: #fff;
-	word-wrap: break-word;
 }
