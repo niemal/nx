@@ -1,6 +1,6 @@
 <?php
 /**
- * Every array returned is supposed to be ASsociative and sorted, high-to-low.
+ * Every array returned is supposed to be associative and sorted, high-to-low.
  **/
 
 class SIMPLE
@@ -99,7 +99,7 @@ class SIMPLE
 	 * @return
 	 *	An array of indices 'series', 'labels' and 'total', first 2 intended for chartist JS.
 	 *
-	 * LASt week's visits.
+	 * Last week's visits.
 	 **/
 	public function last_weeks_visits()
 	{
@@ -196,7 +196,7 @@ class SIMPLE
 	 * @return
 	 *	An array of arrays with 'eng' and 'n' as indices.
 	 *
-	 *	BASed on: https://developer.mozilla.org/en-US/docs/Browser_detection_using_the_user_agent
+	 *	Based on: https://developer.mozilla.org/en-US/docs/Browser_detection_using_the_user_agent
 	 **/
 	public function render_engines()
 	{
