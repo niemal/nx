@@ -91,10 +91,10 @@
 			<form action="?admin/statistics" method="post" class="content">
 				<div class="content-inner glass pure-form">
 					<div id="uris">
-						<label for="uris">URIs</label>
+						<span>URIs</span>
 						<input class="ui--enabled" type="hidden" name="uris" value="false">
 						<div class="fancy-checkbox">
-							<input type="checkbox" class="ui--checkbox" id="uris_checkbox">
+							<input type="checkbox" class="ui--checkbox" name="uris" id="uris_checkbox">
 							<label for="uris_checkbox"></label>
 						</div>
 
@@ -118,10 +118,9 @@
 					<br/>
 
 					<div id="urls">
-						<label for="urls">URLs</label>
-						<input type="hidden" name="urls">
+						<span>URLs</span>
 						<div class="fancy-checkbox">
-							<input type="checkbox" class="ui--checkbox" id="urls_checkbox">
+							<input type="checkbox" class="ui--checkbox" name="urls" id="urls_checkbox">
 							<label for="urls_checkbox"></label>
 						</div>
 
@@ -134,10 +133,9 @@
 					<br/>
 
 					<div id="refs">
-						<label for="refs">Referers</label>
-						<input type="hidden" name="refs">
+						<span>Referers</span>
 						<div class="fancy-checkbox">
-							<input type="checkbox" class="ui--checkbox" id="refs_checkbox">
+							<input type="checkbox" class="ui--checkbox" name="refs" id="refs_checkbox">
 							<label for="refs_checkbox"></label>
 						</div>
 
@@ -161,10 +159,9 @@
 					<br/>
 
 					<div id="oss">
-						<label for="oss">Operating systems</label>
-						<input type="hidden" name="oss">
+						<span>Operating systems</span>
 						<div class="fancy-checkbox">
-							<input type="checkbox" class="ui--checkbox" id="oss_checkbox">
+							<input type="checkbox" class="ui--checkbox" name="oss" id="oss_checkbox">
 							<label for="oss_checkbox"></label>
 						</div>
 
@@ -188,10 +185,9 @@
 					<br/>
 
 					<div id="browsers">
-						<label for="browsers">Browsers</label>
-						<input type="hidden" name="browsers">
+						<span>Browsers</span>
 						<div class="fancy-checkbox">
-							<input type="checkbox" class="ui--checkbox" id="browsers_checkbox">
+							<input type="checkbox" class="ui--checkbox" name="browsers" id="browsers_checkbox">
 							<label for="browsers_checkbox"></label>
 						</div>
 
@@ -216,9 +212,8 @@
 
 					<div id="uas">
 						<span>User agents</span>
-						<input type="hidden" name="uas">
 						<div class="fancy-checkbox">
-							<input type="checkbox" class="ui--checkbox" id="uas_checkbox">
+							<input type="checkbox" class="ui--checkbox" name="uas" id="uas_checkbox">
 							<label for="uas_checkbox"></label>
 						</div>
 
@@ -256,10 +251,6 @@
 	<script src="http://inexist3nce.github.io/static/ayylmao-2.0.0.min.js"></script>
 
 	<script>
-		var tokens = ['uri', 'ref', 'os', 'browser'];
-		var img_tokens = ['uris', 'urls', 'refs', 'oss', 'browsers', 'uas'];
-
-
 		function toggleOption(el, option) {
 			var options = el.value.split(/\s+/),
 				length = options.length,
@@ -289,10 +280,8 @@
 				checkbox.onchange = function(){
 					if(this.checked){
 						Ayy(parentId + ' .ui--section').style.display = 'block';
-						Ayy(parentId + ' .ui--enabled').value = 'true';
 					} else {
 						Ayy(parentId + ' .ui--section').style.display = 'none';
-						Ayy(parentId + ' .ui--enabled').value = 'false';
 					}
 				}
 
