@@ -1,0 +1,57 @@
+/*
+ * inexs css utils
+ */
+
+.width-full { width: 100%; }
+.width-half { width: 50%; }
+
+.u-left { text-align: left; }
+.u-right { text-align: right; }
+.u-center { text-align: center; }
+.u-center2 { margin: 0 auto; }
+
+@media screen and (max-width: 35.438em) { /* 35.5em - 1px */
+	.sm-left { text-align: left; }
+	.sm-right { text-align: right; }
+	.sm-center { text-align: center; }
+	.sm-center2 { margin: 0 auto; }
+}
+@media screen and (max-width: 47.9375em) { /* 48em - 1px */
+	.md-left { text-align: left; }
+	.md-right { text-align: right; }
+	.md-center { text-align: center; }
+	.md-center2 { margin: 0 auto; }
+}
+@media screen and (max-width: 59.9375em) { /* 60em - 1px */
+	.mx-left { text-align: left; }
+	.mx-right { text-align: right; }
+	.mx-center { text-align: center; }
+	.mx-center2 { margin: 0 auto; }
+}
+@media screen and (max-width: 63.9375em) { /* 64em - 1px */
+	.lg-left { text-align: left; }
+	.lg-right { text-align: right; }
+	.lg-center { text-align: center; }
+	.lg-center2 { margin: 0 auto; }
+}
+@media screen and (max-width: 79.9375em) { /* 80em - 1px */
+	.xl-left { text-align: left; }
+	.xl-right { text-align: right; }
+	.xl-center { text-align: center; }
+	.xl-center2 { margin: 0 auto; }
+}
+
+/* tooltips */
+#tt {
+	position: absolute;
+	display: block;
+}
+
+#ttcont {
+	display: block;
+	padding: 4px 10px;
+	margin-left: 8px;
+	background: #444;
+	color: #fff;
+	word-wrap: break-word;
+}
