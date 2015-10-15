@@ -4,7 +4,10 @@
 	require_once('src/stats.php');
 	$stats = new SIMPLE($nx->db);
 
-	$uris = $stats->most_visited_uris();
+	$uris = $stats->get_uris();
+	$refs = $stats->get_refs();
+	$oss = $stats->operating_systems();
+	$browsers = $stats->browsers();
 
 ?><!DOCTYPE html><html>
 <head>
@@ -44,12 +47,16 @@
 						<div id="uri_section" class="sections">
 							<input required name="uri" value="ALL" readonly="readonly">
 							<select id="uri_opts">
-								<option>this_domain</option>
-								<option>that_domain</option>
+								<option>ALL</option>
+								<?php foreach ($uris as $row) { ?>
+								<option><?php echo $row['uri']; ?></option>
+								<?php } ?>
 							</select>
 							<div id="add_uri_btn" class="pure-button">Add</div>
 							<div id="del_uri_btn" class="pure-button">Delete</div>
 							<div id="clear_uri_btn" class="pure-button">Clear</div>
+							<label for="uris_regex">Regex</label>
+							<input name="uris_regex">
 						</div>
 					</div>
 
@@ -60,6 +67,11 @@
 						<img id="urls_tick" src="assets/tick_disabled.png">
 						<img id="urls_x" src="assets/x_enabled.png">
 						<input style="visibility: hidden;" name="urls">
+
+						<div id="url_section" class="sections">
+							<label for="urls_regex">Regex</label>
+							<input name="urls_regex">
+						</div>
 					</div>
 
 					<br/>
@@ -74,12 +86,15 @@
 							<input required name="ref" readonly="readonly">
 							<select id="ref_opts">
 								<option>ALL</option>
-								<option>this_ref</option>
-								<option>that_ref</option>
+								<?php foreach ($refs as $row) { ?>
+								<option><?php echo $row['ref']; ?></option>
+								<?php } ?>
 							</select>
 							<div id="add_ref_btn" class="pure-button">Add</div>
 							<div id="del_ref_btn" class="pure-button">Delete</div>
 							<div id="clear_ref_btn" class="pure-button">Clear</div>
+							<label for="refs_regex">Regex</label>
+							<input name="refs_regex">
 						</div>
 					</div>
 
@@ -95,12 +110,15 @@
 							<input required name="os" readonly="readonly">
 							<select id="os_opts">
 								<option>ALL</option>
-								<option>this_os</option>
-								<option>that_os</option>
+								<?php foreach ($oss as $row) { ?>
+								<option><?php echo $row['os']; ?></option>
+								<?php } ?>
 							</select>
 							<div id="add_os_btn" class="pure-button">Add</div>
 							<div id="del_os_btn" class="pure-button">Delete</div>
 							<div id="clear_os_btn" class="pure-button">Clear</div>
+							<label for="oss_regex">Regex</label>
+							<input name="oss_regex">
 						</div>
 					</div>
 
@@ -116,12 +134,15 @@
 							<input required name="browser" readonly="readonly">
 							<select id="browser_opts">
 								<option>ALL</option>
-								<option>this_browser</option>
-								<option>that_browser</option>
+								<?php foreach ($browsers as $row) { ?>
+								<option><?php echo $row['ua']; ?></option>
+								<?php } ?>
 							</select>
 							<div id="add_browser_btn" class="pure-button">Add</div>
 							<div id="del_browser_btn" class="pure-button">Delete</div>
 							<div id="clear_browser_btn" class="pure-button">Clear</div>
+							<label for="browsers_regex">Regex</label>
+							<input name="browsers_regex">
 						</div>
 					</div>
 
@@ -132,19 +153,30 @@
 						<img id="uas_tick" src="assets/tick_disabled.png">
 						<img id="uas_x" src="assets/x_enabled.png">
 						<input style="visibility: hidden;" name="uas">
+
+						<div id="ua_section" class="sections">
+							<label for="uas_regex">Regex</label>
+							<input name="uas_regex">
+						</div>
 					</div>
 
 					<br/>
 
 					<div>
+						<?php $dates = $nx->db->query("SELECT date FROM simple GROUP BY date ORDER BY date;")->fetch_all(MYSQLI_ASSOC); ?>
 						<label for="from">From</label>
 						<select required name="from">
-							<option value="some_date">some_date</option>
+							<?php foreach ($dates as $row) { ?>
+							<option value="<?php echo $row['date'] ?>"><?php echo $row['date'] ?></option>
+							<?php } ?>
 						</select>
 
-						<label for="to">to</label>
+						<?php $dates = array_reverse($dates); ?>
+						<label for="to">To</label>
 						<select required name="to">
-							<option value="some_date">some_date</option>
+							<?php foreach ($dates as $row) { ?>
+							<option value="<?php echo $row['date'] ?>"><?php echo $row['date'] ?></option>
+							<?php } ?>
 						</select>
 
 						<button class="pure-button" type="submit" name="submit">Submit</button>
@@ -170,11 +202,9 @@
 				document.getElementsByName(img_token)[0].value = 'true';
 
 				var token = img_token.substring(0, img_token.length-1);
-				if (token !== 'ua' || token !== 'url') {
-					document.getElementById(token + '_section').style.display = 'block';
-					var input = document.getElementsByName(token)[0];
-					if (!input.value.length) input.value = 'ALL';
-				}
+				document.getElementById(token + '_section').style.display = 'block';
+				var input = document.getElementsByName(token)[0];
+				if (typeof input !== 'undefined' && !input.value.length) input.value = 'ALL';
 			}
 
 			document.getElementById(img_token + '_x').onclick = function(e) {
@@ -183,8 +213,7 @@
 
 				document.getElementsByName(img_token)[0].value = '';
 				var token = img_token.substring(0, img_token.length-1);
-				if (token !== 'ua' || token !== 'url')
-					document.getElementById(token + '_section').style.display = 'none';
+				document.getElementById(token + '_section').style.display = 'none';
 			}
 		}
 
@@ -216,6 +245,7 @@
 					var last_val_index = elem.value.length-1;
 					if (elem.value[last_val_index] === ' ')
 						elem.value = elem.value.substring(0, last_val_index);
+					if (!elem.value) elem.value = 'ALL';
 				}
 			})(token);
 

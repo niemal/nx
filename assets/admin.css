@@ -94,6 +94,9 @@ The content `<div>` is where all your content goes.
 .sections {
 	display: none;
 }
+.sections label {
+	margin-top: 10px;
+}
 div img {
 	cursor: pointer;
 }

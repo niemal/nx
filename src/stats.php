@@ -48,9 +48,9 @@ class SIMPLE
 
 	/**
 	 * @return
-	 *	An array of arrays with indices 'uri' and 'url'.
+	 *	An array of arrays with indices 'uri', 'url' and 'time'.
 	 *
-	 * The 10 most recent visited URIs with their URLs.
+	 * The 10 most recently visited URIs with their URLs along with how long ago they occured. Used in dashboard.php.
 	 **/
 	public function most_recent_uris()
 	{
@@ -68,30 +68,64 @@ class SIMPLE
 
 
 	/**
-	 * @return
-	 *	An array of arrays with indices 'uri' and 'n'.
+	 * @param
+	 *	$visits(boolean), whether or not to retrieve visits as 'n'.
+	 *	$limit(boolean/integer), limits the result by N rows.
 	 *
-	 * All most visited URIs with their visits-number.
+	 * @return
+	 *	In case that $visits is false, an array of arrays with indices 'uri' is returned, else an index 'n' is added as well representing the visits
+	 *		and the array of rows (arrays) is sorted according to 'n', highest-to-low.
+	 *	If $limit is set to some integer, the result array is limited to $limit amount of arrays (rows).
+	 *
 	 **/
-	public function top_5_uris()
+	public function get_uris($visits = false, $limit = false)
 	{
-		return $this->db
-			->query("SELECT uri, sum(visits) AS n FROM simple GROUP BY uri ORDER BY n DESC LIMIT 5;")
-			->fetch_all(MYSQLI_ASSOC);
+		if ($visits) {
+			if ($limit) return $this->db
+					->query("SELECT uri, sum(visits) AS n FROM simple GROUP BY uri ORDER BY n DESC LIMIT $limit;")
+					->fetch_all(MYSQLI_ASSOC);
+			return $this->db
+				->query("SELECT uri, sum(visits) AS n FROM simple GROUP BY uri ORDER BY n DESC;")
+				->fetch_all(MYSQLI_ASSOC);
+		} else {
+			if ($limit) return $this->db
+					->query("SELECT uri FROM simple GROUP BY uri LIMIT $limit;")
+					->fetch_all(MYSQLI_ASSOC);
+			return $this->db
+				->query("SELECT uri FROM simple GROUP BY uri;")
+				->fetch_all(MYSQLI_ASSOC);
+		}
 	}
 
 
 	/**
-	 * @return
-	 *	An array of arrays with indices 'uri' and 'n'.
+	 * @param
+	 *	$visits(boolean), whether or not to retrieve visits as 'n'.
+	 *	$limit(boolean/integer), limits the result by N rows.
 	 *
-	 * All most visited URIs with their visits-number.
+	 * @return
+	 *	In case that $visits is false, an array of arrays with indices 'ref' is returned, else an index 'n' is added as well representing the visits
+	 *		and the array of rows (arrays) is sorted according to 'n', highest-to-low.
+	 *	If $limit is set to some integer, the result array is limited to $limit amount of arrays (rows).
+	 *
 	 **/
-	public function most_visited_uris()
+	public function get_refs($visits = false, $limit = false)
 	{
-		return $this->db
-			->query("SELECT uri, sum(visits) AS n FROM simple GROUP BY uri ORDER BY n DESC;")
-			->fetch_all(MYSQLI_ASSOC);
+		if ($visits) {
+			if ($limit) return $this->db
+					->query("SELECT ref, count(ref) AS n FROM refs GROUP BY ref ORDER BY n DESC LIMIT $limit;")
+					->fetch_all(MYSQLI_ASSOC);
+			return $this->db
+				->query("SELECT ref, count(ref) AS n FROM refs GROUP BY ref ORDER BY n DESC LIMIT;")
+				->fetch_all(MYSQLI_ASSOC);
+		} else {
+			if ($limit) return $this->db
+					->query("SELECT ref FROM refs GROUP BY ref LIMIT $limit;")
+					->fetch_all(MYSQLI_ASSOC);
+			return $this->db
+				->query("SELECT ref FROM refs GROUP BY ref;")
+				->fetch_all(MYSQLI_ASSOC);
+		}
 	}
 
 
@@ -214,32 +248,6 @@ class SIMPLE
 	}
 
 
-	/**
-	 * @return
-	 *	An array of arrays with indices 'ref' and 'n'.
-	 *
-	 *	Top 5 referers (most frequent) overall.
-	 **/
-	public function top_5_refs()
-	{
-		return $this->db
-			->query("SELECT ref, count(ref) AS n FROM simple GROUP BY ref ORDER BY n DESC LIMIT 5;")
-			->fetch_all(MYSQLI_ASSOC);
-	}
-
-
-	/**
-	 * @return
-	 *	An array of arrays with indices 'ref' and 'n'.
-	 *
-	 *	All referers.
-	 **/
-	public function all_refs()
-	{
-		return $this->db
-			->query("SELECT ref, count(ref) AS n FROM simple GROUP BY ref ORDER BY n DESC;")
-			->fetch_all(MYSQLI_ASSOC);
-	}
 
 
 	/**

@@ -6,7 +6,7 @@
 
 	$last_week = $stats->last_weeks_visits();
 	$recent_visits = $stats->most_recent_uris();
-	$uri_visits = $stats->top_5_uris();
+	$uri_visits = $stats->get_uris(true, 5);
 	$top_browsers = $stats->browsers();
 ?>
 <!DOCTYPE html><html>
