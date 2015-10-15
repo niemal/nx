@@ -8,13 +8,65 @@
 	$refs = $stats->get_refs();
 	$oss = $stats->operating_systems();
 	$browsers = $stats->browsers();
+	$dates = $nx->db->query('SELECT date FROM simple GROUP BY date ORDER BY date;')->fetch_all(MYSQLI_ASSOC);
 
 ?><!DOCTYPE html><html>
 <head>
 	<?php echo _headMeta('Statistics | NX'); ?>
-	<link rel="stylesheet" href="assets/chartist.min.css">
 	<link rel="stylesheet" href="assets/utils.css">
 	<link rel="stylesheet" href="assets/admin.css">
+	<style>
+		.fancy-checkbox input {
+			visibility: hidden;
+		}
+
+		.fancy-checkbox {
+			display: inline-block;
+			width: 40px;
+			height: 10px;
+			background: #333;
+			margin: 1em; /* todo fix positioning */
+			border-radius: 10px;
+			position: relative;
+
+			-webkit-box-shadow: inset 0 1px 1px rgba(0,0,0,0.5), 0 1px 0 rgba(255,255,255,0.2);
+			-moz-box-shadow: inset 0 1px 1px rgba(0,0,0,0.5), 0 1px 0 rgba(255,255,255,0.2);
+			box-shadow: inset 0 1px 1px rgba(0,0,0,0.5), 0 1px 0 rgba(255,255,255,0.2);
+		}
+
+		.fancy-checkbox label {
+			display: block;
+			width: 16px;
+			height: 16px;
+			border-radius: 10px;
+			margin: 0;
+
+			-webkit-transition: all .2s ease;
+			-moz-transition: all .2s ease;
+			-o-transition: all .2s ease;
+			-ms-transition: all .2s ease;
+			transition: all .2s ease;
+			cursor: pointer;
+			position: absolute;
+			top: -3px;
+			left: -3px;
+
+			-webkit-box-shadow: 0 2px 5px 0 rgba(0,0,0,0.3);
+			-moz-box-shadow: 0 2px 5px 0 rgba(0,0,0,0.3);
+			box-shadow: 0 2px 5px 0 rgba(0,0,0,0.3);
+			background: #FFF8F8;
+		}
+
+		.fancy-checkbox input:checked + label {
+			left: 27px;
+			background: #CDFFD5;
+		}
+
+
+		.ui--section {
+			display: none;
+		}
+	</style>
 </head>
 
 <body>
@@ -38,132 +90,147 @@
 
 			<form action="?admin/statistics" method="post" class="content">
 				<div class="content-inner glass pure-form">
-					<div>
+					<div id="uris">
 						<label for="uris">URIs</label>
-						<img id="uris_tick" src="assets/tick_disabled.png">
-						<img id="uris_x" src="assets/x_enabled.png">
-						<input style="visibility: hidden;" name="uris">
+						<input class="ui--enabled" type="hidden" name="uris" value="false">
+						<div class="fancy-checkbox">
+							<input type="checkbox" class="ui--checkbox" id="uris_checkbox">
+							<label for="uris_checkbox"></label>
+						</div>
 
-						<div id="uri_section" class="sections">
-							<input required name="uri" value="ALL" readonly="readonly">
-							<select id="uri_opts">
+						<div class="ui--section">
+							<input class="ui--filter-input" required name="uri" value="ALL" readonly="readonly">
+							<select class="ui--options">
 								<option>ALL</option>
 								<?php foreach ($uris as $row) { ?>
 								<option><?php echo $row['uri']; ?></option>
 								<?php } ?>
 							</select>
-							<div id="add_uri_btn" class="pure-button">Add</div>
-							<div id="del_uri_btn" class="pure-button">Delete</div>
-							<div id="clear_uri_btn" class="pure-button">Clear</div>
-							<label for="uris_regex">Regex</label>
-							<input name="uris_regex">
+							<button type="button" class="pure-button ui--filter-add">Add</button>
+							<button type="button" class="pure-button ui--filter-delete">Delete</button>
+							<button type="button" class="pure-button ui--filter-clear">Clear</button>
+							<br/>
+							<label for="uris_regex">Regex filter</label>
+							<input type="text" name="uris_regex">
 						</div>
 					</div>
 
 					<br/>
 
-					<div>
+					<div id="urls">
 						<label for="urls">URLs</label>
-						<img id="urls_tick" src="assets/tick_disabled.png">
-						<img id="urls_x" src="assets/x_enabled.png">
-						<input style="visibility: hidden;" name="urls">
+						<input type="hidden" name="urls">
+						<div class="fancy-checkbox">
+							<input type="checkbox" class="ui--checkbox" id="urls_checkbox">
+							<label for="urls_checkbox"></label>
+						</div>
 
-						<div id="url_section" class="sections">
-							<label for="urls_regex">Regex</label>
-							<input name="urls_regex">
+						<div class="ui--section">
+							<label for="urls_regex">Regex filter</label>
+							<input type="text" name="urls_regex">
 						</div>
 					</div>
 
 					<br/>
 
-					<div>
+					<div id="refs">
 						<label for="refs">Referers</label>
-						<img id="refs_tick" src="assets/tick_disabled.png">
-						<img id="refs_x" src="assets/x_enabled.png">
-						<input style="visibility: hidden;" name="refs">
+						<input type="hidden" name="refs">
+						<div class="fancy-checkbox">
+							<input type="checkbox" class="ui--checkbox" id="refs_checkbox">
+							<label for="refs_checkbox"></label>
+						</div>
 
-						<div id="ref_section" class="sections">
-							<input required name="ref" readonly="readonly">
-							<select id="ref_opts">
+						<div class="ui--section">
+							<input class="ui--filter-input" required name="ref" value="ALL" readonly="readonly">
+							<select class="ui--options">
 								<option>ALL</option>
 								<?php foreach ($refs as $row) { ?>
 								<option><?php echo $row['ref']; ?></option>
 								<?php } ?>
 							</select>
-							<div id="add_ref_btn" class="pure-button">Add</div>
-							<div id="del_ref_btn" class="pure-button">Delete</div>
-							<div id="clear_ref_btn" class="pure-button">Clear</div>
-							<label for="refs_regex">Regex</label>
-							<input name="refs_regex">
+							<button type="button" class="pure-button ui--filter-add">Add</button>
+							<button type="button" class="pure-button ui--filter-delete">Delete</button>
+							<button type="button" class="pure-button ui--filter-clear">Clear</button>
+							<br/>
+							<label for="refs_regex">Regex filter</label>
+							<input type="text" name="refs_regex">
 						</div>
 					</div>
 
 					<br/>
 
-					<div>
+					<div id="oss">
 						<label for="oss">Operating systems</label>
-						<img id="oss_tick" src="assets/tick_disabled.png">
-						<img id="oss_x" src="assets/x_enabled.png">
-						<input style="visibility: hidden;" name="oss">
+						<input type="hidden" name="oss">
+						<div class="fancy-checkbox">
+							<input type="checkbox" class="ui--checkbox" id="oss_checkbox">
+							<label for="oss_checkbox"></label>
+						</div>
 
-						<div id="os_section" class="sections">
-							<input required name="os" readonly="readonly">
-							<select id="os_opts">
+						<div class="ui--section">
+							<input class="ui--filter-input" required name="os" value="ALL" readonly="readonly">
+							<select class="ui--options">
 								<option>ALL</option>
 								<?php foreach ($oss as $row) { ?>
 								<option><?php echo $row['os']; ?></option>
 								<?php } ?>
 							</select>
-							<div id="add_os_btn" class="pure-button">Add</div>
-							<div id="del_os_btn" class="pure-button">Delete</div>
-							<div id="clear_os_btn" class="pure-button">Clear</div>
-							<label for="oss_regex">Regex</label>
-							<input name="oss_regex">
+							<button type="button" class="pure-button ui--filter-add">Add</button>
+							<button type="button" class="pure-button ui--filter-delete">Delete</button>
+							<button type="button" class="pure-button ui--filter-clear">Clear</button>
+							<br/>
+							<label for="oss_regex">Regex filter</label>
+							<input type="text" name="oss_regex">
 						</div>
 					</div>
 
 					<br/>
 
-					<div>
+					<div id="browsers">
 						<label for="browsers">Browsers</label>
-						<img id="browsers_tick" src="assets/tick_disabled.png">
-						<img id="browsers_x" src="assets/x_enabled.png">
-						<input style="visibility: hidden;" name="browsers">
+						<input type="hidden" name="browsers">
+						<div class="fancy-checkbox">
+							<input type="checkbox" class="ui--checkbox" id="browsers_checkbox">
+							<label for="browsers_checkbox"></label>
+						</div>
 
-						<div id="browser_section" class="sections">
-							<input required name="browser" readonly="readonly">
-							<select id="browser_opts">
+						<div class="ui--section">
+							<input class="ui--filter-input" required name="browser" value="ALL" readonly="readonly">
+							<select class="ui--options">
 								<option>ALL</option>
 								<?php foreach ($browsers as $row) { ?>
 								<option><?php echo $row['ua']; ?></option>
 								<?php } ?>
 							</select>
-							<div id="add_browser_btn" class="pure-button">Add</div>
-							<div id="del_browser_btn" class="pure-button">Delete</div>
-							<div id="clear_browser_btn" class="pure-button">Clear</div>
-							<label for="browsers_regex">Regex</label>
-							<input name="browsers_regex">
+							<button type="button" class="pure-button ui--filter-add">Add</button>
+							<button type="button" class="pure-button ui--filter-delete">Delete</button>
+							<button type="button" class="pure-button ui--filter-clear">Clear</button>
+							<br/>
+							<label for="browsers_regex">Regex filter</label>
+							<input type="text" name="browsers_regex">
+						</div>
+					</div>
+
+					<br/>
+
+					<div id="uas">
+						<span>User agents</span>
+						<input type="hidden" name="uas">
+						<div class="fancy-checkbox">
+							<input type="checkbox" class="ui--checkbox" id="uas_checkbox">
+							<label for="uas_checkbox"></label>
+						</div>
+
+						<div class="ui--section">
+							<label for="uas_regex">Regex filter</label>
+							<input type="text" name="uas_regex">
 						</div>
 					</div>
 
 					<br/>
 
 					<div>
-						<label for="uas">User agents</label>
-						<img id="uas_tick" src="assets/tick_disabled.png">
-						<img id="uas_x" src="assets/x_enabled.png">
-						<input style="visibility: hidden;" name="uas">
-
-						<div id="ua_section" class="sections">
-							<label for="uas_regex">Regex</label>
-							<input name="uas_regex">
-						</div>
-					</div>
-
-					<br/>
-
-					<div>
-						<?php $dates = $nx->db->query("SELECT date FROM simple GROUP BY date ORDER BY date;")->fetch_all(MYSQLI_ASSOC); ?>
 						<label for="from">From</label>
 						<select required name="from">
 							<?php foreach ($dates as $row) { ?>
@@ -172,7 +239,7 @@
 						</select>
 
 						<?php $dates = array_reverse($dates); ?>
-						<label for="to">To</label>
+						<label for="to">to</label>
 						<select required name="to">
 							<?php foreach ($dates as $row) { ?>
 							<option value="<?php echo $row['date'] ?>"><?php echo $row['date'] ?></option>
@@ -186,72 +253,72 @@
 		</div>
 	</div>
 
+	<script src="http://inexist3nce.github.io/static/ayylmao-2.0.0.min.js"></script>
+
 	<script>
 		var tokens = ['uri', 'ref', 'os', 'browser'];
 		var img_tokens = ['uris', 'urls', 'refs', 'oss', 'browsers', 'uas'];
 
-		tokens.forEach(function(token) { assign_buttons(token); });
-		img_tokens.forEach(function(img_token) { assign_toggles_imgs(img_token); });
 
-		function assign_toggles_imgs(img_token)
-		{
-			document.getElementById(img_token + '_tick').onclick = function(e) {
-				this.src = 'assets/tick_enabled.png';
-				document.getElementById(img_token + '_x').src = 'assets/x_disabled.png';
+		function toggleOption(el, option) {
+			var options = el.value.split(/\s+/),
+				length = options.length,
+				i = 0;
 
-				document.getElementsByName(img_token)[0].value = 'true';
-
-				var token = img_token.substring(0, img_token.length-1);
-				document.getElementById(token + '_section').style.display = 'block';
-				var input = document.getElementsByName(token)[0];
-				if (typeof input !== 'undefined' && !input.value.length) input.value = 'ALL';
+			for(; i < length; i++) {
+			  if (options[i] === option) {
+				options.splice(i, 1);
+				break;
+			  }
+			}
+			if (length === options.length) {
+				options.push(option);
 			}
 
-			document.getElementById(img_token + '_x').onclick = function(e) {
-				this.src = 'assets/x_enabled.png';
-				document.getElementById(img_token + '_tick').src = 'assets/tick_disabled.png';
-
-				document.getElementsByName(img_token)[0].value = '';
-				var token = img_token.substring(0, img_token.length-1);
-				document.getElementById(token + '_section').style.display = 'none';
-			}
+			el.value = options.join(' ');
 		}
 
-		function assign_buttons(token)
-		{
-			document.getElementById('add_' + token + '_btn').onclick = (function(token) {
-				return function() {
-					var opts = document.getElementById(token + '_opts'),
-						elem = document.getElementsByName(token)[0];
+		var sections = ['uris', 'urls', 'refs', 'oss', 'browsers', 'uas'];
+		for(var i=0; i<sections.length; i++){
+			(function(i, section){
+				var parentId = '#' + section,
+					parent = Ayy('#' + section),
+					checkbox = Ayy(parentId + ' .ui--checkbox'),
+					filter = Ayy(parentId + ' .ui--filter-input');
 
-					var selected = opts.options[opts.selectedIndex].text;
-
-					if (selected === 'ALL') elem.value = selected;
-					if (elem.value.indexOf('ALL') !== -1) elem.value = '';
-
-					if (elem.value.indexOf(selected) === -1) {
-						if (elem.value === '') elem.value = selected;
-						else                   elem.value += ' ' + selected;
+				checkbox.onchange = function(){
+					if(this.checked){
+						Ayy(parentId + ' .ui--section').style.display = 'block';
+						Ayy(parentId + ' .ui--enabled').value = 'true';
+					} else {
+						Ayy(parentId + ' .ui--section').style.display = 'none';
+						Ayy(parentId + ' .ui--enabled').value = 'false';
 					}
 				}
-			})(token);
 
-			document.getElementById('del_' + token + '_btn').onclick = (function(token) {
-				return function() {
-					var opts = document.getElementById(token + '_opts'),
-						elem = document.getElementsByName(token)[0];
-						
-					elem.value = elem.value.replace(opts.options[opts.selectedIndex].text, '');
-					var last_val_index = elem.value.length-1;
-					if (elem.value[last_val_index] === ' ')
-						elem.value = elem.value.substring(0, last_val_index);
-					if (!elem.value) elem.value = 'ALL';
+				if(filter == null) return;
+
+				var filterInput = Ayy(parentId + ' .ui--filter-input'),
+					filterOptions = Ayy(parentId + ' .ui--options'),
+					filterAdd = Ayy(parentId + ' .ui--filter-add'),
+					filterDelete = Ayy(parentId + ' .ui--filter-delete'),
+					filterClear = Ayy(parentId + ' .ui--filter-clear');
+
+				filterAdd.onclick = function(){
+					var selected = filterOptions.options[filterOptions.selectedIndex].text;
+					toggleOption(filterInput, selected);
 				}
-			})(token);
 
-			document.getElementById('clear_' + token + '_btn').onclick = (function(token) {
-				return function() { document.getElementsByName(token)[0].value = 'ALL'; }
-			})(token);
+				filterDelete.onclick = function(){
+					var selected = filterOptions.options[filterOptions.selectedIndex].text;
+					toggleOption(filterInput, selected);
+				}
+
+				filterClear.onclick = function(){
+					filterInput.value = '';
+				}
+
+			})(i, sections[i]);
 		}
 	</script>
 </body>
