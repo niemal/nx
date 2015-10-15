@@ -26,8 +26,8 @@
 			<div class="content">
 				<div class="content-inner glass">
 					<div class="article">
-						<h2>Custom filters</h2>
-						<p>Through this page you are able to produce statistics and graphs of your own preference. Furthermore, you are also able to export whatever you want in PDF/more formats.</p>
+						<h2>Customize!</h2>
+						<p>Through this page you are able to produce statistics and graphs of your own preference. Furthermore, you are able to export whatever preferences you selected in PDF/more formats.</p>
 					</div>
 				</div>
 			</div>
@@ -36,17 +36,21 @@
 			<form action="?admin/statistics" method="post" class="content">
 				<div class="content-inner glass pure-form">
 					<div>
-						<b>URIs</b>&nbsp;<input required name="uri" readonly="readonly">
-						<select id="uri_opts">
-							<?php foreach($uris as $uri){ ?>
-							<option><?php echo $uri['uri']; ?></option>
-							<?php } ?>
-							<option>this_domain</option>
-							<option>that_domain</option>
-						</select>
-						<div id="add_uri_btn" class="pure-button">Add</div>
-						<div id="del_uri_btn" class="pure-button">Delete</div>
-						<div id="clear_uri_btn" class="pure-button">Clear</div>
+						<label for="uris">URIs</label>
+						<img id="uris_tick" src="assets/tick_disabled.png">
+						<img id="uris_x" src="assets/x_enabled.png">
+						<input style="visibility: hidden;" name="uris">
+
+						<div id="uri_section" class="sections">
+							<input required name="uri" value="ALL" readonly="readonly">
+							<select id="uri_opts">
+								<option>this_domain</option>
+								<option>that_domain</option>
+							</select>
+							<div id="add_uri_btn" class="pure-button">Add</div>
+							<div id="del_uri_btn" class="pure-button">Delete</div>
+							<div id="clear_uri_btn" class="pure-button">Clear</div>
+						</div>
 					</div>
 
 					<br/>
@@ -152,7 +156,7 @@
 
 	<script>
 		var tokens = ['uri', 'ref', 'os', 'browser'];
-		var img_tokens = ['urls', 'refs', 'oss', 'browsers', 'uas']
+		var img_tokens = ['uris', 'urls', 'refs', 'oss', 'browsers', 'uas'];
 
 		tokens.forEach(function(token) { assign_buttons(token); });
 		img_tokens.forEach(function(img_token) { assign_toggles_imgs(img_token); });
@@ -166,8 +170,11 @@
 				document.getElementsByName(img_token)[0].value = 'true';
 
 				var token = img_token.substring(0, img_token.length-1);
-				if (token !== 'ua' || token !== 'url')
+				if (token !== 'ua' || token !== 'url') {
 					document.getElementById(token + '_section').style.display = 'block';
+					var input = document.getElementsByName(token)[0];
+					if (!input.value.length) input.value = 'ALL';
+				}
 			}
 
 			document.getElementById(img_token + '_x').onclick = function(e) {
@@ -213,7 +220,7 @@
 			})(token);
 
 			document.getElementById('clear_' + token + '_btn').onclick = (function(token) {
-				return function() { document.getElementsByName(token)[0].value = ''; }
+				return function() { document.getElementsByName(token)[0].value = 'ALL'; }
 			})(token);
 		}
 	</script>
